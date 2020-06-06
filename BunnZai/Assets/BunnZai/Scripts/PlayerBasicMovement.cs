@@ -9,8 +9,19 @@ public class PlayerBasicMovement : MonoBehaviour
         Player mPlayer = GetComponent<Player>();
     }
 
-    public void example()
+    public void AddMovementInput()
     {
-        //e.g. mPlayer.AddForce();
+
     }
+
+    public void Jump()
+    {
+
+    }
+
+    public void DoubleJump()
+    {
+
+    }
+
 }
