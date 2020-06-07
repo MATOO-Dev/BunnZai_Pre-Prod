@@ -54,6 +54,7 @@ public class Controller_PlayerMovement : MonoBehaviour
         MovePlayer();
         if (dashTimer > 0)
             dashTimer -= Time.deltaTime;
+        Debug.Log(dashTimer);
         jumpVector = new Vector3(0, 5, Mathf.Clamp(rb.velocity.magnitude, 0, 2));
         camViewDir.eulerAngles = new Vector3(0, camCrane.rotation.eulerAngles.y, camCrane.rotation.eulerAngles.z); //Strips CAM ANGLE of it's PITCH, to use the rest for MOVEMENT DIRECTION
         moveDir = Quaternion.LookRotation(rb.velocity, Vector3.up); //Looks through vector to get rotation/direction. Up-vector is needed to stabilize against spin along the vector.
@@ -125,7 +126,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     void Dash()
     {
         dashTimer = 3;
-        rb.AddForce(direction * new Vector3(1, 1, 5), ForceMode.Impulse);
+        rb.AddForce(direction * new Vector3(1, 1, 15),ForceMode.VelocityChange);
     }
     void WallJump()
     {
