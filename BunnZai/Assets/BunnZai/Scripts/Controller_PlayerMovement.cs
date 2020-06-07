@@ -156,9 +156,11 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("Wall"))
             wallhit = true;
+        rb.useGravity = false;
     }
     private void OnTriggerExit(Collider other)
     {
+        rb.useGravity = true;
         wallhit = false;
     }
     ///SANITY NOTES
