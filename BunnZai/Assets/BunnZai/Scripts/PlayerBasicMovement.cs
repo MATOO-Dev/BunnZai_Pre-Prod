@@ -26,7 +26,15 @@ public class PlayerBasicMovement : MonoBehaviour
             //apply smoothed rotation
             transform.rotation = Quaternion.Euler(0, smoothedRotation, 0);
             //add movement force to rigidbody
-            mPlayer.mRigidRef.velocity = movementDirection * mPlayer.mMaxWalkSpeed;
+            if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed)
+                mPlayer.mRigidRef.velocity = movementDirection * mPlayer.mMaxWalkSpeed;
+            //Debug.Log(mPlayer.mRigidRef.velocity);
+            //    //add movement force to rigidbody
+            //    mPlayer.mRigidRef.velocity = movementDirection * (mPlayer.mRigidRef.velocity.magnitude * mPlayer.mAcceleration);
+        }
+        else
+        {
+            mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier;
         }
     }
 

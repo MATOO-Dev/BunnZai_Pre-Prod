@@ -22,11 +22,12 @@ public class Player : MonoBehaviour
     [SerializeField] bool mAerialJumpUsed;
 
     [Header("Movement Variables")]
-    public float mMaxWalkSpeed;
-    public float mAcceleration;
-    public float mMaxVelocity;
-    public float mTurnTime = 0.1f;
-    public float mJumpForce; //maybe rename to jumpheight instead? base on implementation
+    public float mMaxWalkSpeed;             //max walking speed
+    public float mAcceleration;             //walk acceleration
+    public float mMaxVelocity;              //e.g. terminal velocity
+    public float mTurnTime;                 //time to turn when moving
+    public float mDecelerationMultiplier;   //used for breaking
+    public float mJumpForce;                //maybe rename to jumpheight instead? base on implementation
 
     [Header("Private Variables")]
     [HideInInspector] public float mForwardAxisDelta;
