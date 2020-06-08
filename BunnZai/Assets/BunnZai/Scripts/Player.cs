@@ -12,64 +12,66 @@ public class Player : MonoBehaviour
     PlayerCombatController mCombatController;
 
     [Header("Components")]
-    CapsuleCollider mPlayerCollider;
-    BoxCollider mGroundCheckCollider;
-    Rigidbody mRidigRef;
+    [HideInInspector] public CapsuleCollider mPlayerCollider;
+    [HideInInspector] public BoxCollider mGroundCheckCollider;
+    [HideInInspector] public Rigidbody mRigidRef;
 
     [Header("Movement Parameters")]
     [SerializeField] bool mIsGrounded;
     [SerializeField] bool mIsWalled;
+    [SerializeField] bool mAerialJumpUsed;
 
     [Header("Movement Variables")]
-    [SerializeField] float mMaxWalkSpeed;
-    [SerializeField] float mAcceleration;
-    [SerializeField] float mMaxVelocity;
+    public float mMaxWalkSpeed;
+    public float mAcceleration;
+    public float mMaxVelocity;
+    public float mTurnTime = 0.1f;
+    public float mJumpForce; //maybe rename to jumpheight instead? base on implementation
 
     [Header("Private Variables")]
-    float mForwardAxisDelta;
-    float mSidewaysAxisDelta;
+    [HideInInspector] public float mForwardAxisDelta;
+    [HideInInspector] public float mSidewaysAxisDelta;
 
-    //pre-start
-    void Awake()
+
+    void Awake() //pre-start 
     {
+        //get linked scripts
         mBasicMovement = GetComponent<PlayerBasicMovement>();
         mAdvancedMovement = GetComponent<PlayerAdvancedMovement>();
         mCameraController = GetComponent<PlayerCameraController>();
         mCombatController = GetComponent<PlayerCombatController>();
 
+        //get components
+        mPlayerCollider = GetComponent<CapsuleCollider>();
         mGroundCheckCollider = GetComponent<BoxCollider>();
+        mRigidRef = GetComponent<Rigidbody>();
     }
 
-    //50x/s (default value)
-    void FixedUpdate()
+    private void Update() //every frame, use for graphics/input
     {
-        //e.g. mBasicMovement.Jump();
-
+        Debug.DrawLine(transform.position, transform.position + transform.forward, Color.red);
         UpdateInputValues();
-        CheckGroundState();
+    }
 
+    void FixedUpdate() //50x/s (default value), use for physics
+    {
 
         //moving walking movement to end to slightly improve coyote time
         mBasicMovement.AddMovementInput();
     }
 
-    //update axis deltas based on movement input
-    void UpdateInputValues()
+    void UpdateInputValues() //update axis deltas based on movement input 
     {
-        mForwardAxisDelta = Input.GetAxis("ForwardsAxis");
-        mSidewaysAxisDelta = Input.GetAxis("SidewaysAxis");
+        mForwardAxisDelta = Input.GetAxisRaw("ForwardsAxis");
+        mSidewaysAxisDelta = Input.GetAxisRaw("SidewaysAxis");
     }
 
-    //check ground state using raycast
-    bool CheckGroundState()
+    public Vector3 GetInpitValues() //get vector3 with current input values 
     {
-        //300 is placeholder for distance
-        //alternatively add layer mask
-        Debug.DrawRay(transform.position, Vector3.down, Color.red);
-        return Physics.Raycast(transform.position, Vector3.down, 300);
-        //return Collider.cast
+        return new Vector3(mSidewaysAxisDelta, 0, mForwardAxisDelta);
     }
 
+    //check ground state using trigger
     private void OnTriggerEnter(Collider other)
     {
         mIsGrounded = true;
