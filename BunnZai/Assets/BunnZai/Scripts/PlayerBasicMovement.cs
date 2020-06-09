@@ -6,6 +6,8 @@ public class PlayerBasicMovement : MonoBehaviour
 {
     Player mPlayer;
     float turningVelocity;
+    //change to getcomponent with cam/cinemachine
+    public Transform cam;
 
     public void Awake()
     {
@@ -15,22 +17,22 @@ public class PlayerBasicMovement : MonoBehaviour
     public void AddMovementInput()
     {
         //get normalized direction based on input
-        Vector3 movementDirection = mPlayer.GetInpitValues().normalized;
+        Vector3 inputDirection = mPlayer.GetInpitValues().normalized;
 
-        if (movementDirection.magnitude >= 0.1f)
+        if (inputDirection.magnitude >= 0.1f)
         {
             //get the angle of player movement
-            float directionAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg;
+            float directionAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             //smooth out player rotation towards that angle
             float smoothedRotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, directionAngle, ref turningVelocity, mPlayer.mTurnTime);
             //apply smoothed rotation
             transform.rotation = Quaternion.Euler(0, smoothedRotation, 0);
+
             //add movement force to rigidbody
+            Vector3 moveDirection = Quaternion.Euler(0, directionAngle, 0) * Vector3.forward;
             if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed)
-                mPlayer.mRigidRef.velocity = movementDirection * mPlayer.mMaxWalkSpeed;
-            //Debug.Log(mPlayer.mRigidRef.velocity);
-            //    //add movement force to rigidbody
-            //    mPlayer.mRigidRef.velocity = movementDirection * (mPlayer.mRigidRef.velocity.magnitude * mPlayer.mAcceleration);
+                mPlayer.mRigidRef.velocity = moveDirection * mPlayer.mMaxWalkSpeed;
+            //known issue: moving backwards spazzes the player out, because they keep rotating every tick, so backward direction changes every tick
         }
         else
         {
