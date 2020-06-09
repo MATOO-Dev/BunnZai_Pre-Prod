@@ -55,7 +55,7 @@ public class Controller_PlayerMovement : MonoBehaviour
         MovePlayer();
         if (dashTimer > 0)
             dashTimer -= Time.deltaTime;
-        Debug.Log(dashTimer);
+        Debug.Log(wallhit);
         jumpVector = new Vector3(0, 5, Mathf.Clamp(rb.velocity.magnitude, 0, 2));
         camViewDir.eulerAngles = new Vector3(0, camCrane.rotation.eulerAngles.y, camCrane.rotation.eulerAngles.z); //Strips CAM ANGLE of it's PITCH, to use the rest for MOVEMENT DIRECTION
         moveDir = Quaternion.LookRotation(rb.velocity, Vector3.up); //Looks through vector to get rotation/direction. Up-vector is needed to stabilize against spin along the vector.
@@ -71,8 +71,8 @@ public class Controller_PlayerMovement : MonoBehaviour
         float strafe = Input.GetAxis("Horizontal");
         float forward = Input.GetAxis("Vertical");
 
-        if (!onGround && wallhit)
-            rb.velocity = Vector3.zero;
+        //if (!onGround && wallhit)
+        //    rb.velocity = Vector3.zero;
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (onGround)
@@ -111,7 +111,7 @@ public class Controller_PlayerMovement : MonoBehaviour
             else
             {
                 //Behavior if player is airborne
-                movementVector = camViewDir * (new Vector3(strafe, 0f, forward) * airAccelSpeed * Time.deltaTime * 0.1f);     //Maps forward/strafe controls in relation to PITCHLESS CAM DIR; Results in movement direction vector.
+                movementVector = camViewDir * (new Vector3(strafe, 0f, forward) * airAccelSpeed * Time.deltaTime);     //Maps forward/strafe controls in relation to PITCHLESS CAM DIR; Results in movement direction vector.
                 rb.velocity += movementVector;
                 Quaternion rotHelp = new Quaternion();
                 rotHelp.eulerAngles = new Vector3(-Mathf.Clamp(moveDir.eulerAngles.x, -20, 20), moveDir.eulerAngles.y, 0);
@@ -125,15 +125,18 @@ public class Controller_PlayerMovement : MonoBehaviour
     //This function should yeet the player
     void JumpPlayer()
     {
-        rb.AddForce(moveDir * jumpVector, ForceMode.Impulse);
+        rb.AddForce(jumpVector, ForceMode.Impulse);
         onGround = false;
     }
     void Dash()
     {
         dashTimer = 3;
-        Vector3 boost = direction * new Vector3(1, 1, 20);
-        Debug.Log(boost);
-        rb.velocity = boost;
+       
+        if (onGround)
+            rb.AddForce(direction * new Vector3(1, 1, 30),ForceMode.Impulse);
+        else
+            rb.AddForce(direction * new Vector3(1, 1, 10),ForceMode.Impulse);
+      
     }
     void WallJump()
     {
@@ -163,7 +166,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("Wall"))
             wallhit = true;
-        gravityScale = -0.4f;
+        gravityScale = -0.8f;
     }
     private void OnTriggerExit(Collider other)
     {
