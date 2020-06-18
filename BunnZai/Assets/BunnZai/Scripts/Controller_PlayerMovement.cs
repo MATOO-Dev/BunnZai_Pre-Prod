@@ -39,6 +39,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     RaycastHit feetHit;
     bool wallhit = false;
     bool dashing = false;
+    bool dashAllowed = true;
     bool onGround = false;
     float dashTimer = 0;
     float gravityScale = 0;
@@ -59,7 +60,13 @@ public class Controller_PlayerMovement : MonoBehaviour
             dashTimer -= Time.deltaTime;
         if (dashTimer <= 2.5f && dashing)
             EndDash();
-        Debug.Log(wallhit);
+        if (dashTimer <= 0)
+        {
+            dashAllowed = true;
+            Debug.Log("You can dash again!");
+        }
+           
+        Debug.Log(dashAllowed);
         jumpVector = new Vector3(0, 5, Mathf.Clamp(rb.velocity.magnitude, 0, 2));
         camViewDir.eulerAngles = new Vector3(0, camCrane.rotation.eulerAngles.y, camCrane.rotation.eulerAngles.z); //Strips CAM ANGLE of it's PITCH, to use the rest for MOVEMENT DIRECTION
         moveDir = Quaternion.LookRotation(rb.velocity, Vector3.up); //Looks through vector to get rotation/direction. Up-vector is needed to stabilize against spin along the vector.
@@ -90,7 +97,7 @@ public class Controller_PlayerMovement : MonoBehaviour
                 WallJump();
         }
       
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashTimer <= 0)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashAllowed)
             Dash();
         /// !!!! TODO: SEPARATE MOVEMENT FOR GROUNDED AND UNGROUNDED PLAYER !!!!
         /// 
@@ -143,6 +150,7 @@ public class Controller_PlayerMovement : MonoBehaviour
         dashTimer = 3;
         dashing = true;
         rb.velocity += direction * new Vector3(1,1,dashSpeed);
+        dashAllowed = false;
     }
     void EndDash()
     {
@@ -157,6 +165,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         rb.velocity = direction * new Vector3(1, 1, 15);
         wallhit = false;
+        dashAllowed = true;
     }
     void HandleVelocityFalloff()
     {
@@ -170,7 +179,10 @@ public class Controller_PlayerMovement : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Ground"))
+        {
+            //dashAllowed = true;
             onGround = true;
+        }
     }
     private void OnCollisionExit(Collision collision)
     {
