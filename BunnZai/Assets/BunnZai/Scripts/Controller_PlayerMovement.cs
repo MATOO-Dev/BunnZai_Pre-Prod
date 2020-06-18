@@ -26,6 +26,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     public float airAccelSpeed;         //Air acceleration modifier
     public float maxGroundSpeed = 3;    //Maximum running speed
     public float groundSlowdown = 5;    //Slowdown factor when walking on foot
+    public float dashSpeed = 15f;
     public Rigidbody rb;
     [Header("Hidden Variables")]
     Vector3 jumpVector;
@@ -140,7 +141,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         dashTimer = 3;
         dashing = true;
-        rb.velocity += direction * new Vector3(1,1,15);
+        rb.velocity += direction * new Vector3(1,1,dashSpeed);
     }
     void EndDash()
     {
