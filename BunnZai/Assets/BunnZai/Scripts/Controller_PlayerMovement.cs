@@ -58,7 +58,7 @@ public class Controller_PlayerMovement : MonoBehaviour
         MovePlayer();
         if (dashTimer > 0)
             dashTimer -= Time.deltaTime;
-        if (dashTimer <= 2.5f && dashing)
+        if (dashTimer <= 2.7f && dashing)
             EndDash();
         if (dashTimer <= 0)
         {
