@@ -37,6 +37,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     Quaternion direction;
     RaycastHit feetHit;
     bool wallhit = false;
+    bool dashing = false;
     bool onGround = false;
     float dashTimer = 0;
     float gravityScale = 0;
@@ -55,6 +56,8 @@ public class Controller_PlayerMovement : MonoBehaviour
         MovePlayer();
         if (dashTimer > 0)
             dashTimer -= Time.deltaTime;
+        if (dashTimer <= 2.5f && dashing)
+            EndDash();
         Debug.Log(wallhit);
         jumpVector = new Vector3(0, 5, Mathf.Clamp(rb.velocity.magnitude, 0, 2));
         camViewDir.eulerAngles = new Vector3(0, camCrane.rotation.eulerAngles.y, camCrane.rotation.eulerAngles.z); //Strips CAM ANGLE of it's PITCH, to use the rest for MOVEMENT DIRECTION
@@ -79,6 +82,11 @@ public class Controller_PlayerMovement : MonoBehaviour
                 JumpPlayer();
             else if (!onGround && wallhit)
                 WallJump();
+        }
+        else
+        {
+            if (!onGround && wallhit)
+                Wallrun();
         }
         if (Input.GetKeyDown(KeyCode.LeftShift) && dashTimer <= 0)
             Dash();
@@ -125,18 +133,23 @@ public class Controller_PlayerMovement : MonoBehaviour
     //This function should yeet the player
     void JumpPlayer()
     {
-        rb.AddForce(jumpVector, ForceMode.Impulse);
+        rb.velocity = direction * jumpVector;
         onGround = false;
     }
     void Dash()
     {
         dashTimer = 3;
-       
-        if (onGround)
-            rb.AddForce(direction * new Vector3(1, 1, 30),ForceMode.Impulse);
-        else
-            rb.AddForce(direction * new Vector3(1, 1, 10),ForceMode.Impulse);
-      
+        dashing = true;
+        rb.velocity += direction * new Vector3(1,1,15);
+    }
+    void EndDash()
+    {
+        dashing = false;
+        rb.velocity = Vector3.zero;
+    }
+    void Wallrun()
+    {
+
     }
     void WallJump()
     {
