@@ -81,14 +81,15 @@ public class Controller_PlayerMovement : MonoBehaviour
         {
             if (onGround)
                 JumpPlayer();
-            else if (!onGround && wallhit)
-                WallJump();
-        }
-        else
-        {
             if (!onGround && wallhit)
                 Wallrun();
         }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            if (!onGround && wallhit)
+                WallJump();
+        }
+      
         if (Input.GetKeyDown(KeyCode.LeftShift) && dashTimer <= 0)
             Dash();
         /// !!!! TODO: SEPARATE MOVEMENT FOR GROUNDED AND UNGROUNDED PLAYER !!!!
