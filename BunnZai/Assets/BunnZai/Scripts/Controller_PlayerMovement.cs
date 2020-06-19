@@ -65,7 +65,7 @@ public class Controller_PlayerMovement : MonoBehaviour
             dashAllowed = true;
             Debug.Log("You can dash again!");
         }
-           
+
         Debug.Log(dashAllowed);
         jumpVector = new Vector3(0, 5, Mathf.Clamp(rb.velocity.magnitude, 0, 2));
         camViewDir.eulerAngles = new Vector3(0, camCrane.rotation.eulerAngles.y, camCrane.rotation.eulerAngles.z); //Strips CAM ANGLE of it's PITCH, to use the rest for MOVEMENT DIRECTION
@@ -84,19 +84,16 @@ public class Controller_PlayerMovement : MonoBehaviour
 
         //if (!onGround && wallhit)
         //    rb.velocity = Vector3.zero;
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (onGround)
-                JumpPlayer();
-            if (!onGround && wallhit)
-                Wallrun();
-        }
+        if (Input.GetKeyDown(KeyCode.Space) && onGround)
+            JumpPlayer();
+        if (Input.GetKey(KeyCode.Space) && !onGround && wallhit)
+            Wallrun();
         if (Input.GetKeyUp(KeyCode.Space))
         {
             if (!onGround && wallhit)
                 WallJump();
+            EndWallrun();
         }
-      
         if (Input.GetKeyDown(KeyCode.LeftShift) && dashAllowed)
             Dash();
         /// !!!! TODO: SEPARATE MOVEMENT FOR GROUNDED AND UNGROUNDED PLAYER !!!!
@@ -149,17 +146,25 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         dashTimer = 3;
         dashing = true;
-        rb.velocity += direction * new Vector3(1,1,dashSpeed);
+        rb.velocity += direction * new Vector3(1, 1, dashSpeed);
         dashAllowed = false;
     }
     void EndDash()
     {
         dashing = false;
-        rb.velocity = Vector3.zero;
+        rb.velocity = rb.velocity.normalized;
     }
     void Wallrun()
     {
+        //Todo: lower velocity && keep on wall
+        gravityScale = -0.85f;
+        rb.velocity *= 0.99f;
+    }
 
+    void EndWallrun()
+    {
+        //Todo: lower velocity && keep on wall
+        gravityScale = 0;
     }
     void WallJump()
     {
@@ -172,9 +177,9 @@ public class Controller_PlayerMovement : MonoBehaviour
         if (onGround && !Input.GetKeyDown("space"))
         {
             if (!Input.GetKey("w") && !Input.GetKey("a") && !Input.GetKey("s") && !Input.GetKey("d"))
-                rb.velocity = new Vector3(rb.velocity.x - rb.velocity.x * Time.deltaTime * groundSlowdown, rb.velocity.y - rb.velocity.y * Time.deltaTime * groundSlowdown, rb.velocity.z - rb.velocity.z * Time.deltaTime * groundSlowdown);
+                rb.velocity *= 0.9f;
         }
-
+        //new Vector3(rb.velocity.x - rb.velocity.x * Time.deltaTime * groundSlowdown, rb.velocity.y - rb.velocity.y * Time.deltaTime * groundSlowdown, rb.velocity.z - rb.velocity.z * Time.deltaTime * groundSlowdown);
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -193,11 +198,10 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("Wall"))
             wallhit = true;
-        gravityScale = -0.8f;
+       
     }
     private void OnTriggerExit(Collider other)
     {
-        gravityScale = 0;
         wallhit = false;
     }
     ///SANITY NOTES
