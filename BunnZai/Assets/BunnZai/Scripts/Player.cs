@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
         mRigidRef = GetComponent<Rigidbody>();
     }
 
-    private void Update() //every frame, use for graphics/input
+    private void Update() //every frame (fps dependant), use for graphics/input
     {
         Debug.DrawLine(transform.position, transform.position + transform.forward, Color.red);
         UpdateInputValues();

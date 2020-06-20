@@ -16,6 +16,7 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void AddMovementInput()
     {
+
         //get normalized direction based on input
         Vector3 inputDirection = mPlayer.GetInpitValues().normalized;
 
@@ -38,6 +39,8 @@ public class PlayerBasicMovement : MonoBehaviour
         {
             mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier;
         }
+
+        Debug.Log(mPlayer.mRigidRef.velocity.magnitude);
     }
 
     public void Jump()
