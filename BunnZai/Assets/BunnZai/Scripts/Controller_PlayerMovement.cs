@@ -36,7 +36,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     //Quaternion relInputDir;           // CAM Relative input direction, flattened to 2d.
     Quaternion moveDir;                 //Current direction of movement of the Pawn
     Quaternion direction;
-    RaycastHit feetHit;
+   
     bool wallhit = false;
     bool dashing = false;
     bool dashAllowed = true;
@@ -85,9 +85,7 @@ public class Controller_PlayerMovement : MonoBehaviour
         //if (!onGround && wallhit)
         //    rb.velocity = Vector3.zero;
         if (!onGround && wallhit)
-        {
             Wallrun();
-        }
         else
             EndWallrun();
         if (Input.GetKeyDown(KeyCode.Space) && onGround)
@@ -207,93 +205,22 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         wallhit = false;
     }
-    ///SANITY NOTES
-    ///
-    ///-- Transform.Translate has a HUGE ISSUE: It does not affect velocity. Meaning that a running doesn't alter trajectory of a jump,
-    ///stopping movement midair drops the player like a stone.
-    /// 
-    ///-- In reality moving objects don't GRADUALLY receive mov. energy unassisted(eg without help of external force/motorisation/mechanical locomotion).
-    ///JUMP/THROW/GUNFIRE/LAUNCH energy is received as an IMPULSE.
-    ///     -- Does something like "potential/stored energy" make sense?
-    ///-- Unity's RIGIDBODY tracks the total velocity of objects by default.
-    ///     Pros:
-    ///     -- Already built, needs no dev time.
-    ///     Cons:
-    ///     -- It's subject to INTERNAL systematic PHYSICS CALCULATIONS. 
-    ///         Altering that for the purposes of gameplay is very likely to be HARD.
-    //This function should cast something under the player to check if he collides with a walkable surface
-    //bool CheckGRND() {
-    //    return Physics.SphereCast(playerAvatar.transform.position+new Vector3(0, 0.5f, 0), 0.2f, Vector3.down, out feetHit, 0.4f);
-    //}
-
-    //This function should check collision with walls and let player jump off of them.
-    //IMPORTANT: Should the wall jumping be dependant on movement direction? EG not jumping off of walls you're flying away from?.. 
-    //...well actually t. spheres were already supposed to be cast in relation to movDir, so... But what if you rayhit a wall w/ normal that is facing the same direction as moveDir?(How tho..)
-    //
-    //Would just 4 spherecasts be enough?
-    //Things necessary to know for the jump:
-    //-Wall touch point normal
-    //-How many walls were touched?
-    //-In case of multiple walls: closest wall?
-
-    //float rayLength = 1;
-    //RaycastHit[] totalHits = new RaycastHit[5];
-    //bool[] checkers = new bool[5];
-    //RaycastHit contactPoint = new RaycastHit();
-
-    ////Check for impacts
-    //checkers[0] = Physics.Raycast(playerAvatar.position, playerAvatar.rotation * Vector3.forward, out totalHits[0], rayLength);
-    //checkers[1] = Physics.Raycast(playerAvatar.position, playerAvatar.rotation * Vector3.left, out totalHits[1], rayLength);
-    //checkers[2] = Physics.Raycast(playerAvatar.position, playerAvatar.rotation * Vector3.right, out totalHits[2], rayLength);
-    //checkers[3] = Physics.Raycast(playerAvatar.position, (playerAvatar.rotation * Vector3.right) + (playerAvatar.rotation * Vector3.forward), out totalHits[3], rayLength);
-    //checkers[4] = Physics.Raycast(playerAvatar.position, (playerAvatar.rotation * Vector3.left) + (playerAvatar.rotation * Vector3.forward), out totalHits[4], rayLength);
-
-    ////Determine the closest impact point
-    //float dist = 100;
-    //for (int i = 0; i < checkers.Length; i++)
+    //bool CheckWallrun()
     //{
-    //    if (checkers[i])
+    //    RaycastHit hitInfoRight;
+    //    RaycastHit hitInfoLeft;
+    //    if (Physics.Raycast(transform.position, playerAvatar.TransformDirection(Vector3.right), out hitInfoRight, 1f) && hitInfoRight.collider.CompareTag("Wall"))
     //    {
-    //        if (dist > totalHits[i].distance)
-    //        {
-    //            contactPoint = totalHits[i];
-    //            dist = totalHits[i].distance;
-    //        }
+    //        if (!rightWallhit)
+    //            rightWallhit = true;
+    //        return true;
     //    }
+    //    if (Physics.Raycast(transform.position, playerAvatar.TransformDirection(Vector3.left), out hitInfoLeft, 1f) && hitInfoLeft.collider.CompareTag("Wall"))
+    //    {
+    //        if (!leftWallhit)
+    //            leftWallhit = true;
+    //        return true;
+    //    }
+    //    return false;
     //}
-    ////Visualize vectors
-    //Debug.DrawRay(playerAvatar.position, playerAvatar.rotation * Vector3.forward, Color.blue, 0);
-    //Debug.DrawRay(playerAvatar.position, playerAvatar.rotation * Vector3.left, Color.green, 0);
-    //Debug.DrawRay(playerAvatar.position, playerAvatar.rotation * Vector3.right, Color.red, 0);
-    //Debug.DrawRay(playerAvatar.position, (playerAvatar.rotation * Vector3.right) + (playerAvatar.rotation * Vector3.forward), Color.yellow, 0);
-    //Debug.DrawRay(playerAvatar.position, (playerAvatar.rotation * Vector3.left) + (playerAvatar.rotation * Vector3.forward), Color.cyan, 0);
-
-
-
-    //if (checkers[0] || checkers[1] || checkers[2] || checkers[3] || checkers[4])
-    //{
-    //    Debug.Log("Walljump Digga!");
-    //    Vector3 reflectVelocity = Vector3.Reflect(rb.velocity, contactPoint.normal);
-    //    if (reflectVelocity == rb.velocity)
-    //    {
-    //       reflectVelocity = Quaternion.AngleAxis(-90, Vector3.up) * rb.velocity;
-    //       rb.velocity = reflectVelocity;
-    //       Debug.Log("Reflection equals initial direction!");
-    //    }
-    //    else
-    //    {
-    //        rb.velocity = reflectVelocity;
-    //    }
-    //    WallJump();
-    //    Debug.DrawRay(contactPoint.point, contactPoint.normal, Color.green, 2);
-    //}
-
-    ////Visualize vectors
-    //Debug.DrawRay(playerAvatar.position, playerAvatar.rotation * Vector3.forward, Color.blue, 0);
-    //Debug.DrawRay(playerAvatar.position, playerAvatar.rotation * Vector3.left, Color.green, 0);
-    //Debug.DrawRay(playerAvatar.position, playerAvatar.rotation * Vector3.right, Color.red, 0);
-    //Debug.DrawRay(playerAvatar.position, (playerAvatar.rotation * Vector3.right) + (playerAvatar.rotation * Vector3.forward), Color.yellow, 0);
-    //Debug.DrawRay(playerAvatar.position, (playerAvatar.rotation * Vector3.left) + (playerAvatar.rotation * Vector3.forward), Color.cyan, 0);
-
-    //Debug.DrawRay(playerAvatar.position, rb.velocity.normalized, Color.white, 0, false);
 }
