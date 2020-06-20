@@ -7,6 +7,7 @@ public class PlayerBasicMovement : MonoBehaviour
     Player mPlayer;
     float turningVelocity;
     //change to getcomponent with cam/cinemachine
+    //add script to cam to get player reference
     public Transform cam;
 
     public void Awake()
