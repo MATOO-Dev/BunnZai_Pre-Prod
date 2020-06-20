@@ -23,24 +23,22 @@ public class PlayerBasicMovement : MonoBehaviour
         if (inputDirection.magnitude >= 0.1f)
         {
             //get the angle of player movement
-            float directionAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             //smooth out player rotation towards that angle
-            float smoothedRotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, directionAngle, ref turningVelocity, mPlayer.mTurnTime);
+            float directionAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turningVelocity, mPlayer.mTurnTime);
             //apply smoothed rotation
-            transform.rotation = Quaternion.Euler(0, smoothedRotation, 0);
+            transform.rotation = Quaternion.Euler(0f, directionAngle, 0f);
 
             //add movement force to rigidbody
-            Vector3 moveDirection = Quaternion.Euler(0, directionAngle, 0) * Vector3.forward;
+            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed)
-                mPlayer.mRigidRef.velocity = moveDirection * mPlayer.mMaxWalkSpeed;
-            //known issue: moving backwards spazzes the player out, because they keep rotating every tick, so backward direction changes every tick
+                mPlayer.mRigidRef.velocity = moveDirection.normalized * mPlayer.mMaxWalkSpeed;
         }
         else
         {
+            //deceleration if nothing is pressed
             mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier;
         }
-
-        Debug.Log(mPlayer.mRigidRef.velocity.magnitude);
     }
 
     public void Jump()

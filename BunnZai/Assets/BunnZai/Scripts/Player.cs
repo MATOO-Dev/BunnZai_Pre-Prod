@@ -63,13 +63,13 @@ public class Player : MonoBehaviour
 
     void UpdateInputValues() //update axis deltas based on movement input 
     {
-        mForwardAxisDelta = Input.GetAxisRaw("ForwardsAxis");
-        mSidewaysAxisDelta = Input.GetAxisRaw("SidewaysAxis");
+        mForwardAxisDelta = Input.GetAxis("ForwardsAxis");
+        mSidewaysAxisDelta = Input.GetAxis("SidewaysAxis");
     }
 
     public Vector3 GetInpitValues() //get vector3 with current input values 
     {
-        return new Vector3(mSidewaysAxisDelta, 0, mForwardAxisDelta);
+        return new Vector3(mSidewaysAxisDelta, 0f, mForwardAxisDelta);
     }
 
     //check ground state using trigger
