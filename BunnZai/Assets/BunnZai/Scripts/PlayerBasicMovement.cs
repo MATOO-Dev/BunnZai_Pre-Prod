@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Jumptype
+{
+    AddForce,
+    SetVelocity
+}
+
 public class PlayerBasicMovement : MonoBehaviour
 {
     Player mPlayer;
@@ -9,6 +15,7 @@ public class PlayerBasicMovement : MonoBehaviour
     //change to getcomponent with cam/cinemachine
     //add script to cam to get player reference
     public Transform cam;
+    public Jumptype JType = Jumptype.AddForce;
 
     public void Awake()
     {
@@ -33,23 +40,33 @@ public class PlayerBasicMovement : MonoBehaviour
             //add movement force to rigidbody
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed)
-                mPlayer.mRigidRef.velocity = moveDirection.normalized * mPlayer.mMaxWalkSpeed;
+                //mPlayer.mRigidRef.velocity = moveDirection.normalized * mPlayer.mMaxWalkSpeed;
+                mPlayer.mRigidRef.velocity = new Vector3(moveDirection.x, mPlayer.mRigidRef.velocity.y, moveDirection.z);
         }
         else
         {
             //deceleration if nothing is pressed
-            mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier;
+            //mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier;
+            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x * mPlayer.mDecelerationMultiplier, mPlayer.mRigidRef.velocity.y, mPlayer.mRigidRef.velocity.z * mPlayer.mDecelerationMultiplier);
         }
     }
 
     public void Jump()
     {
-
+        if (JType == Jumptype.AddForce)
+            mPlayer.mRigidRef.AddForce(Vector3.up * mPlayer.mJumpForce);
+        else
+            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidRef.velocity.y);
     }
 
+    //could be integrated into jump() when refactoring
     public void DoubleJump()
     {
-
+        if (JType == Jumptype.AddForce)
+            mPlayer.mRigidRef.AddForce(Vector3.up * mPlayer.mJumpForce);
+        else
+            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidRef.velocity.y);
+        mPlayer.mAerialJumpUsed = true;
     }
 
 }

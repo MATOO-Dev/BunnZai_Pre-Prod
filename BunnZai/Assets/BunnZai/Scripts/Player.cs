@@ -18,8 +18,8 @@ public class Player : MonoBehaviour
 
     [Header("Movement Parameters")]
     [SerializeField] bool mIsGrounded;
-    [SerializeField] bool mIsWalled;
-    [SerializeField] bool mAerialJumpUsed;
+    public bool mIsWalled;
+    public bool mAerialJumpUsed;
 
     [Header("Movement Variables")]
     public float mMaxWalkSpeed;             //max walking speed
@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     public float mTurnTime;                 //time to turn when moving
     public float mDecelerationMultiplier;   //used for breaking
     public float mJumpForce;                //maybe rename to jumpheight instead? base on implementation
+    public float mJumpVelocity;
 
     [Header("Private Variables")]
     [HideInInspector] public float mForwardAxisDelta;
@@ -56,6 +57,12 @@ public class Player : MonoBehaviour
 
     void FixedUpdate() //50x/s (default value), use for physics
     {
+        //call jump functions
+        if (Input.GetAxis("Jump") > 0.1f)
+            if (mIsGrounded)
+                mBasicMovement.Jump();
+            else if (!mAerialJumpUsed)
+                mBasicMovement.DoubleJump();
 
         //moving walking movement to end to slightly improve coyote time
         mBasicMovement.AddMovementInput();
@@ -76,6 +83,7 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         mIsGrounded = true;
+        mAerialJumpUsed = false;
     }
     private void OnTriggerExit(Collider other)
     {
