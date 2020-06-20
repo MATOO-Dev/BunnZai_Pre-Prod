@@ -84,15 +84,18 @@ public class Controller_PlayerMovement : MonoBehaviour
 
         //if (!onGround && wallhit)
         //    rb.velocity = Vector3.zero;
+        if (!onGround && wallhit)
+        {
+            Wallrun();
+        }
+        else
+            EndWallrun();
         if (Input.GetKeyDown(KeyCode.Space) && onGround)
             JumpPlayer();
-        if (Input.GetKey(KeyCode.Space) && !onGround && wallhit)
-            Wallrun();
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if (!onGround && wallhit)
                 WallJump();
-            EndWallrun();
         }
         if (Input.GetKeyDown(KeyCode.LeftShift) && dashAllowed)
             Dash();
@@ -158,7 +161,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         //Todo: lower velocity && keep on wall
         gravityScale = -0.85f;
-        rb.velocity *= 0.99f;
+        rb.velocity *= 0.995f;
     }
 
     void EndWallrun()
