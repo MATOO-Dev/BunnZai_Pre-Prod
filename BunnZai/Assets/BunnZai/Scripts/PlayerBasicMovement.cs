@@ -38,7 +38,7 @@ public class PlayerBasicMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, directionAngle, 0f);
 
             //add movement force to rigidbody
-            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward * mPlayer.mMaxWalkSpeed;
             if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed)
                 //mPlayer.mRigidRef.velocity = moveDirection.normalized * mPlayer.mMaxWalkSpeed;
                 mPlayer.mRigidRef.velocity = new Vector3(moveDirection.x, mPlayer.mRigidRef.velocity.y, moveDirection.z);
@@ -46,7 +46,7 @@ public class PlayerBasicMovement : MonoBehaviour
         else
         {
             //deceleration if nothing is pressed
-            //mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier;
+            //mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier, but in fancy;
             mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x * mPlayer.mDecelerationMultiplier, mPlayer.mRigidRef.velocity.y, mPlayer.mRigidRef.velocity.z * mPlayer.mDecelerationMultiplier);
         }
     }
