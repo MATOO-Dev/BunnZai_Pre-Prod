@@ -39,7 +39,7 @@ public class PlayerBasicMovement : MonoBehaviour
 
             //add movement force to rigidbody
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward * mPlayer.mMaxWalkSpeed;
-            if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed)
+            if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed) //could be used later for acceleration instead of instant max speed
                 //mPlayer.mRigidRef.velocity = moveDirection.normalized * mPlayer.mMaxWalkSpeed;
                 mPlayer.mRigidRef.velocity = new Vector3(moveDirection.x, mPlayer.mRigidRef.velocity.y, moveDirection.z);
         }

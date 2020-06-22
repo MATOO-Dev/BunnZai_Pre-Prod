@@ -58,11 +58,14 @@ public class Player : MonoBehaviour
     void FixedUpdate() //50x/s (default value), use for physics
     {
         //call jump functions
-        if (Input.GetAxis("Jump") > 0.1f)
+        if (Input.GetButtonDown("Jump"))
+        {
+            Debug.Log("JOMP");
             if (mIsGrounded)
                 mBasicMovement.Jump();
             else if (!mAerialJumpUsed)
                 mBasicMovement.DoubleJump();
+        }
 
         //moving walking movement to end to slightly improve coyote time
         mBasicMovement.AddMovementInput();
