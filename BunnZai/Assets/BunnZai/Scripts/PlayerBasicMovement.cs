@@ -67,9 +67,15 @@ public class PlayerBasicMovement : MonoBehaviour
     public void Jump()
     {
         if (JType == Jumptype.AddForce)
+        {
             mPlayer.mRigidRef.AddForce(Vector3.up * mPlayer.mJumpForce);
+            mPlayer.mRigidRef.AddForce(Vector3.forward * mPlayer.mJumpForceForward);
+        }
         else
+        {
             mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidRef.velocity.y);
+            mPlayer.mRigidRef.velocity = mPlayer.mRigidRef.velocity + Vector3.forward * mPlayer.mJumpVelocityForward;
+        }
         if (!mPlayer.mIsGrounded)
             mPlayer.mAerialJumpUsed = true;
 

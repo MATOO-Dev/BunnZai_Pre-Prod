@@ -82,6 +82,8 @@ public class Player : MonoBehaviour
         return new Vector3(mSidewaysAxisDelta, 0f, mForwardAxisDelta);
     }
 
+
+    //todo: move to seperate child object
     //check ground state using trigger
     private void OnTriggerEnter(Collider other)
     {
