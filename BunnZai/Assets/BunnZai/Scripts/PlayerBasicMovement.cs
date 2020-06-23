@@ -12,6 +12,7 @@ public class PlayerBasicMovement : MonoBehaviour
 {
     Player mPlayer;
     float turningVelocity;
+    float aerialTurningVelocity;
     //change to getcomponent with cam/cinemachine
     //add script to cam to get player reference
     public Transform cam;
@@ -30,17 +31,29 @@ public class PlayerBasicMovement : MonoBehaviour
 
         if (inputDirection.magnitude >= 0.1f)
         {
-            //get the angle of player movement
+            float speedToUse = 0;
+            float timeToUse = 0;
+            if (mPlayer.mIsGrounded)
+            {
+                speedToUse = mPlayer.mMaxWalkSpeed;
+                timeToUse = mPlayer.mWalkTurnTime;
+            }
+            else
+            {
+                speedToUse = mPlayer.mRigidRef.velocity.magnitude;
+                timeToUse = mPlayer.mStrafeTurnTime;
+            }
+            //get the angle of desired player movement
             float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             //smooth out player rotation towards that angle
-            float directionAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turningVelocity, mPlayer.mTurnTime);
+            float directionAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turningVelocity, timeToUse);
             //apply smoothed rotation
             transform.rotation = Quaternion.Euler(0f, directionAngle, 0f);
 
             //add movement force to rigidbody
-            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward * mPlayer.mMaxWalkSpeed;
+            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward * speedToUse;
+
             if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed) //could be used later for acceleration instead of instant max speed
-                //mPlayer.mRigidRef.velocity = moveDirection.normalized * mPlayer.mMaxWalkSpeed;
                 mPlayer.mRigidRef.velocity = new Vector3(moveDirection.x, mPlayer.mRigidRef.velocity.y, moveDirection.z);
         }
         else
@@ -68,5 +81,4 @@ public class PlayerBasicMovement : MonoBehaviour
             mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidRef.velocity.y);
         mPlayer.mAerialJumpUsed = true;
     }
-
 }

@@ -17,15 +17,16 @@ public class Player : MonoBehaviour
     [HideInInspector] public Rigidbody mRigidRef;
 
     [Header("Movement Parameters")]
-    [SerializeField] bool mIsGrounded;
+    public bool mIsGrounded;
     public bool mIsWalled;
     public bool mAerialJumpUsed;
 
     [Header("Movement Variables")]
     public float mMaxWalkSpeed;             //max walking speed
-    public float mAcceleration;             //walk acceleration
+    public float mWalkAcceleration;         //walk acceleration
+    public float mWalkTurnTime;             //time to turn when moving
+    public float mStrafeTurnTime;           //time to turn when strafing
     public float mMaxVelocity;              //e.g. terminal velocity
-    public float mTurnTime;                 //time to turn when moving
     public float mDecelerationMultiplier;   //used for breaking
     public float mJumpForce;                //maybe rename to jumpheight instead? base on implementation
     public float mJumpVelocity;
@@ -60,7 +61,6 @@ public class Player : MonoBehaviour
         //call jump functions
         if (Input.GetButtonDown("Jump"))
         {
-            Debug.Log("JOMP");
             if (mIsGrounded)
                 mBasicMovement.Jump();
             else if (!mAerialJumpUsed)
