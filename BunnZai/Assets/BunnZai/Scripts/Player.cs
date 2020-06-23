@@ -29,7 +29,9 @@ public class Player : MonoBehaviour
     public float mMaxVelocity;              //e.g. terminal velocity
     public float mDecelerationMultiplier;   //used for breaking
     public float mJumpForce;                //maybe rename to jumpheight instead? base on implementation
+    public float mJumpForceForward;
     public float mJumpVelocity;
+    public float mJumpVelocityForward;
 
     [Header("Private Variables")]
     [HideInInspector] public float mForwardAxisDelta;
@@ -61,10 +63,8 @@ public class Player : MonoBehaviour
         //call jump functions
         if (Input.GetButtonDown("Jump"))
         {
-            if (mIsGrounded)
+            if (!mAerialJumpUsed)
                 mBasicMovement.Jump();
-            else if (!mAerialJumpUsed)
-                mBasicMovement.DoubleJump();
         }
 
         //moving walking movement to end to slightly improve coyote time
