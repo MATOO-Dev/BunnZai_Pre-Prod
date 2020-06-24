@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public bool mIsGrounded;
     public bool mIsWalled;
     public bool mAerialJumpUsed;
+    public int mFloorAmount;
 
     [Header("Movement Variables")]
     public float mMaxWalkSpeed;             //max walking speed
@@ -37,6 +38,8 @@ public class Player : MonoBehaviour
     [HideInInspector] public float mForwardAxisDelta;
     [HideInInspector] public float mSidewaysAxisDelta;
 
+    [Header("Debug Variables")]
+    int placeholder;
 
     void Awake() //pre-start 
     {
@@ -80,18 +83,5 @@ public class Player : MonoBehaviour
     public Vector3 GetInpitValues() //get vector3 with current input values 
     {
         return new Vector3(mSidewaysAxisDelta, 0f, mForwardAxisDelta);
-    }
-
-
-    //todo: move to seperate child object
-    //check ground state using trigger
-    private void OnTriggerEnter(Collider other)
-    {
-        mIsGrounded = true;
-        mAerialJumpUsed = false;
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        mIsGrounded = false;
     }
 }
