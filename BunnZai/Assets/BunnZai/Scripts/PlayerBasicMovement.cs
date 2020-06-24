@@ -63,13 +63,6 @@ public class PlayerBasicMovement : MonoBehaviour
             //mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier, but in fancy;
             mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x * mPlayer.mDecelerationMultiplier, mPlayer.mRigidRef.velocity.y, mPlayer.mRigidRef.velocity.z * mPlayer.mDecelerationMultiplier);
         }
-
-        if (mPlayer.mRigidRef.velocity.magnitude > mPlayer.mMaxVelocity)
-        {
-            Vector3 horizontalVelocity = new Vector3(mPlayer.mRigidRef.velocity.x, 0, mPlayer.mRigidRef.velocity.z);
-            horizontalVelocity = horizontalVelocity.normalized * mPlayer.mMaxVelocity;
-            mPlayer.mRigidRef.velocity = new Vector3(horizontalVelocity.x, mPlayer.mRigidRef.velocity.y, horizontalVelocity.z);
-        }
     }
 
     public void Jump()
@@ -86,6 +79,20 @@ public class PlayerBasicMovement : MonoBehaviour
         }
         if (!mPlayer.mIsGrounded)
             mPlayer.mAerialJumpUsed = true;
+    }
 
+    public void UpdateVelocities()
+    {
+        if (mPlayer.mRigidRef.velocity.y < -mPlayer.mTerminalVelocity)
+        {
+            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, -mPlayer.mTerminalVelocity, mPlayer.mRigidRef.velocity.z);
+        }
+
+        Vector3 horizontalVelocity = new Vector3(mPlayer.mRigidRef.velocity.x, 0, mPlayer.mRigidRef.velocity.z);
+        if (horizontalVelocity.magnitude > mPlayer.mMaxVelocity)
+        {
+            horizontalVelocity = horizontalVelocity.normalized * mPlayer.mMaxVelocity;
+            mPlayer.mRigidRef.velocity = new Vector3(horizontalVelocity.x, mPlayer.mRigidRef.velocity.y, horizontalVelocity.z);
+        }
     }
 }

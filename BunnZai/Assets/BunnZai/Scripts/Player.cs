@@ -72,8 +72,8 @@ public class Player : MonoBehaviour
                 mBasicMovement.Jump();
         }
 
-        //moving walking movement to end to slightly improve coyote time
         mBasicMovement.AddMovementInput();
+        mBasicMovement.UpdateVelocities();
     }
 
     void UpdateInputValues() //update axis deltas based on movement input 
