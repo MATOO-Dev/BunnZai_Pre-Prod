@@ -41,6 +41,7 @@ public class PlayerBasicMovement : MonoBehaviour
             else
             {
                 speedToUse = mPlayer.mRigidRef.velocity.magnitude;
+                speedToUse = mPlayer.mMaxWalkSpeed;
                 timeToUse = mPlayer.mStrafeTurnTime;
             }
             //get the angle of desired player movement
@@ -51,12 +52,12 @@ public class PlayerBasicMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, directionAngle, 0f);
 
             //add movement force to rigidbody
-            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward * speedToUse;
+            Vector3 moveDirection = Quaternion.Euler(0f, directionAngle, 0f) * Vector3.forward * speedToUse;
 
             if (mPlayer.mRigidRef.velocity.magnitude < mPlayer.mMaxWalkSpeed) //could be used later for acceleration instead of instant max speed
                 mPlayer.mRigidRef.velocity = new Vector3(moveDirection.x, mPlayer.mRigidRef.velocity.y, moveDirection.z);
         }
-        else
+        else if (mPlayer.mIsGrounded)
         {
             //deceleration if nothing is pressed
             //mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier, but in fancy;
@@ -69,12 +70,12 @@ public class PlayerBasicMovement : MonoBehaviour
         if (JType == Jumptype.AddForce)
         {
             mPlayer.mRigidRef.AddForce(Vector3.up * mPlayer.mJumpForce);
-            mPlayer.mRigidRef.AddForce(Vector3.forward * mPlayer.mJumpForceForward);
+            mPlayer.mRigidRef.AddForce(transform.forward * mPlayer.mJumpForceForward);
         }
         else
         {
             mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidRef.velocity.y);
-            mPlayer.mRigidRef.velocity = mPlayer.mRigidRef.velocity + Vector3.forward * mPlayer.mJumpVelocityForward;
+            mPlayer.mRigidRef.velocity = mPlayer.mRigidRef.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
         }
         if (!mPlayer.mIsGrounded)
             mPlayer.mAerialJumpUsed = true;
