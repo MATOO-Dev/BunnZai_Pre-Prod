@@ -92,6 +92,7 @@ public class PlayerBasicMovement : MonoBehaviour
         }
 
         Vector3 horizontalVelocity = new Vector3(mPlayer.mRigidRef.velocity.x, 0, mPlayer.mRigidRef.velocity.z);
+        Debug.Log(horizontalVelocity.magnitude);
         if (horizontalVelocity.magnitude > mPlayer.mMaxVelocity)
         {
             horizontalVelocity = horizontalVelocity.normalized * mPlayer.mMaxVelocity;
