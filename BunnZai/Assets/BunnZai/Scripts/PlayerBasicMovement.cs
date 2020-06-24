@@ -41,7 +41,7 @@ public class PlayerBasicMovement : MonoBehaviour
             else
             {
                 speedToUse = mPlayer.mRigidRef.velocity.magnitude;
-                speedToUse = mPlayer.mMaxWalkSpeed;
+                //speedToUse = mPlayer.mMaxWalkSpeed;
                 timeToUse = mPlayer.mStrafeTurnTime;
             }
             //get the angle of desired player movement
@@ -62,6 +62,13 @@ public class PlayerBasicMovement : MonoBehaviour
             //deceleration if nothing is pressed
             //mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier, but in fancy;
             mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x * mPlayer.mDecelerationMultiplier, mPlayer.mRigidRef.velocity.y, mPlayer.mRigidRef.velocity.z * mPlayer.mDecelerationMultiplier);
+        }
+
+        if (mPlayer.mRigidRef.velocity.magnitude > mPlayer.mMaxVelocity)
+        {
+            Vector3 horizontalVelocity = new Vector3(mPlayer.mRigidRef.velocity.x, 0, mPlayer.mRigidRef.velocity.z);
+            horizontalVelocity = horizontalVelocity.normalized * mPlayer.mMaxVelocity;
+            mPlayer.mRigidRef.velocity = new Vector3(horizontalVelocity.x, mPlayer.mRigidRef.velocity.y, horizontalVelocity.z);
         }
     }
 

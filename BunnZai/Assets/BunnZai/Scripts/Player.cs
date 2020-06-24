@@ -27,12 +27,14 @@ public class Player : MonoBehaviour
     public float mWalkAcceleration;         //walk acceleration
     public float mWalkTurnTime;             //time to turn when moving
     public float mStrafeTurnTime;           //time to turn when strafing
-    public float mMaxVelocity;              //e.g. terminal velocity
+    public float mMaxVelocity;              //~ horizontal terminal velocity
     public float mDecelerationMultiplier;   //used for breaking
     public float mJumpForce;                //maybe rename to jumpheight instead? base on implementation
-    public float mJumpForceForward;
-    public float mJumpVelocity;
-    public float mJumpVelocityForward;
+    public float mJumpForceForward;         //force applied forward when jumping
+    public float mJumpVelocity;             //velocity applied when jumping
+    public float mJumpVelocityForward;      //velocity applied forward when jumping
+    public float mFallSpeedMultiplier;      //multiplier for falling acceleration
+    public float mTerminalVelocity;         //terminal velocity
 
     [Header("Private Variables")]
     [HideInInspector] public float mForwardAxisDelta;
