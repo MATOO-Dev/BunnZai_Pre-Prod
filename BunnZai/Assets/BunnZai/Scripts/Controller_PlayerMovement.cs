@@ -20,24 +20,27 @@ public class Controller_PlayerMovement : MonoBehaviour
 {
     public Transform playerAvatar;      //World representation of the player pawn. Has has the player collider on it!
     public Transform camCrane;
-    public CapsuleCollider playerCollider;
     [Header("Variables")]
     public float accelSpeed;            //Acceleration modifier
     public float airAccelSpeed;         //Air acceleration modifier
     public float maxGroundSpeed = 3;    //Maximum running speed
     public float groundSlowdown = 5;    //Slowdown factor when walking on foot
-    public float dashSpeed = 15f;
+    public float dashSpeed = 30f;
+    public float wallJumpSpeed = 15f;
     public Rigidbody rb;
     [Header("Hidden Variables")]
     Vector3 jumpVector;
     Vector3 movementVector;
+    Vector3 leftWallPos = new Vector3(0, 0, -10);
+    Vector3 rightWallPos = new Vector3(0, 0, 10);
     Quaternion flatQ;                   //Quaternion for horizontal rotation
     Quaternion camViewDir;              // Current direction in relation to camera view, flattened to only Z,X axes.
     //Quaternion relInputDir;           // CAM Relative input direction, flattened to 2d.
     Quaternion moveDir;                 //Current direction of movement of the Pawn
     Quaternion direction;
-   
+
     bool wallhit = false;
+    private bool wallRunAvailable = true;
     bool dashing = false;
     bool dashAllowed = true;
     bool onGround = false;
@@ -66,13 +69,12 @@ public class Controller_PlayerMovement : MonoBehaviour
             Debug.Log("You can dash again!");
         }
 
-        Debug.Log(dashAllowed);
         jumpVector = new Vector3(0, 5, Mathf.Clamp(rb.velocity.magnitude, 0, 2));
         camViewDir.eulerAngles = new Vector3(0, camCrane.rotation.eulerAngles.y, camCrane.rotation.eulerAngles.z); //Strips CAM ANGLE of it's PITCH, to use the rest for MOVEMENT DIRECTION
         moveDir = Quaternion.LookRotation(rb.velocity, Vector3.up); //Looks through vector to get rotation/direction. Up-vector is needed to stabilize against spin along the vector.
         direction = playerAvatar.rotation;
     }
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         rb.AddForce(Physics.gravity * gravityScale);
     }
@@ -86,7 +88,7 @@ public class Controller_PlayerMovement : MonoBehaviour
         //    rb.velocity = Vector3.zero;
         if (!onGround && wallhit)
             Wallrun();
-        else
+        else if(!wallRunAvailable)
             EndWallrun();
         if (Input.GetKeyDown(KeyCode.Space) && onGround)
             JumpPlayer();
@@ -97,13 +99,13 @@ public class Controller_PlayerMovement : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.LeftShift) && dashAllowed)
             Dash();
-        /// !!!! TODO: SEPARATE MOVEMENT FOR GROUNDED AND UNGROUNDED PLAYER !!!!
-        /// 
-        ///--Ground/Airborne checks should be done anyway, at least for animation reasons
-        ///--Grounded player doesn't use CAM PITCH for the movement vector, as running into
-        ///the ground or upwards doesn't make sense. Airborne player on the other hand might 
-        ///need pitched movement for jump/flight control.
-        ///
+        // !!!! TODO: SEPARATE MOVEMENT FOR GROUNDED AND UNGROUNDED PLAYER !!!!
+        // 
+        //--Ground/Airborne checks should be done anyway, at least for animation reasons
+        //--Grounded player doesn't use CAM PITCH for the movement vector, as running into
+        //the ground or upwards doesn't make sense. Airborne player on the other hand might 
+        //need pitched movement for jump/flight control.
+
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
             if (onGround)
@@ -118,8 +120,7 @@ public class Controller_PlayerMovement : MonoBehaviour
                 //ROTATE PLAYER AVATAR ON GROUND
                 //Can this be done simpler?
 
-                Quaternion rotHelp = new Quaternion();
-                rotHelp.eulerAngles = new Vector3(0, moveDir.eulerAngles.y, moveDir.eulerAngles.z);
+                Quaternion rotHelp = new Quaternion { eulerAngles = new Vector3(0, moveDir.eulerAngles.y, moveDir.eulerAngles.z) };
                 playerAvatar.rotation = rotHelp;   //Set Avatar Rotation to match movement vector
                 //END PITCHLESS MOVEMENT
             }
@@ -128,8 +129,7 @@ public class Controller_PlayerMovement : MonoBehaviour
                 //Behavior if player is airborne
                 movementVector = camViewDir * (new Vector3(strafe, 0f, forward) * airAccelSpeed * Time.deltaTime);     //Maps forward/strafe controls in relation to PITCHLESS CAM DIR; Results in movement direction vector.
                 rb.velocity += movementVector;
-                Quaternion rotHelp = new Quaternion();
-                rotHelp.eulerAngles = new Vector3(-Mathf.Clamp(moveDir.eulerAngles.x, -20, 20), moveDir.eulerAngles.y, 0);
+                Quaternion rotHelp = new Quaternion { eulerAngles = new Vector3(-Mathf.Clamp(moveDir.eulerAngles.x, -20, 20), moveDir.eulerAngles.y, playerAvatar.rotation.eulerAngles.z) };
                 playerAvatar.rotation = rotHelp;   //Set Avatar Rotation to match movement vector
             }
         }
@@ -157,19 +157,35 @@ public class Controller_PlayerMovement : MonoBehaviour
     }
     void Wallrun()
     {
-        //Todo: lower velocity && keep on wall
+        RaycastHit hitInfoRight;
+        RaycastHit hitInfoLeft;
+        if (Physics.Raycast(transform.position, playerAvatar.TransformDirection(Vector3.right), out hitInfoRight, 1f) &&
+            hitInfoRight.collider.CompareTag("Wall") && wallRunAvailable)
+        {
+            wallRunAvailable = false;
+            playerAvatar.Rotate(rightWallPos);
+        }
+
+        if (Physics.Raycast(transform.position, playerAvatar.TransformDirection(Vector3.left), out hitInfoLeft, 1f) &&
+            hitInfoLeft.collider.CompareTag("Wall") && wallRunAvailable)
+        {
+            wallRunAvailable = false;
+            playerAvatar.Rotate(leftWallPos);
+        }
+
         gravityScale = -0.85f;
         rb.velocity *= 0.995f;
     }
 
     void EndWallrun()
     {
-        //Todo: lower velocity && keep on wall
+        wallRunAvailable = true;
+        playerAvatar.rotation = new Quaternion(playerAvatar.rotation.x, playerAvatar.rotation.y, 0, 1);
         gravityScale = 0;
     }
     void WallJump()
     {
-        rb.velocity = direction * new Vector3(1, 1, 15);
+        rb.velocity = direction * new Vector3(1, 1, wallJumpSpeed);
         wallhit = false;
         dashAllowed = true;
     }
@@ -199,7 +215,7 @@ public class Controller_PlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("Wall"))
             wallhit = true;
-       
+
     }
     private void OnTriggerExit(Collider other)
     {
