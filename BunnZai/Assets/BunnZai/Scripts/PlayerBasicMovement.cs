@@ -83,7 +83,8 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void UpdateVelocities()
     {
-        mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mRigidRef.velocity.y * mPlayer.mFallSpeedMultiplier, mPlayer.mRigidRef.velocity.z);
+        if (mPlayer.mRigidRef.velocity.y < 0)
+            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mRigidRef.velocity.y * mPlayer.mFallSpeedMultiplier, mPlayer.mRigidRef.velocity.z);
 
         if (mPlayer.mRigidRef.velocity.y < -mPlayer.mTerminalVelocity)
         {
