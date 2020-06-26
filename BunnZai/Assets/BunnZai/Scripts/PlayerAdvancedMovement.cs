@@ -13,6 +13,11 @@ public class PlayerAdvancedMovement : MonoBehaviour
         mPlayer = GetComponent<Player>();
     }
 
+    private void Start()
+    {
+        //mPlayer.transform.Rotate(0, 0, 90);
+    }
+
     public void Dash()
     {
         mPlayer.mDashTimer = mPlayer.mDashCooldown;
@@ -35,14 +40,15 @@ public class PlayerAdvancedMovement : MonoBehaviour
             hitInfoRight.collider.CompareTag("Wall") && mPlayer.mWallRunAvailable)
         {
             mPlayer.mWallRunAvailable = false;
-            mPlayer.transform.Rotate(new Vector3(0, 0, 10));
+            //mPlayer.transform.Rotate(0, 0, 90);
+            transform.eulerAngles = Vector3.Lerp(transform.rotation.eulerAngles, new Vector3(0, 0, 90), Time.deltaTime);
         }
 
         if (Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.left), out hitInfoLeft, 1f) &&
             hitInfoLeft.collider.CompareTag("Wall") && mPlayer.mWallRunAvailable)
         {
             mPlayer.mWallRunAvailable = false;
-            mPlayer.transform.Rotate(new Vector3(0, 0, -10));
+            //mPlayer.transform.Rotate(0, 0, -90);
         }
         //if(velocity > wallrunvelocity)
         //mPlayer.mRigidBody.velocity *= 0.995f;
@@ -52,7 +58,7 @@ public class PlayerAdvancedMovement : MonoBehaviour
     {
         mPlayer.mWallRunAvailable = true;
         mPlayer.mIsWallRunning = false;
-        mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
+        //mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
     }
 
     public void WallJump()

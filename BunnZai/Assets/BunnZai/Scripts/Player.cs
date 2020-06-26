@@ -85,7 +85,6 @@ public class Player : MonoBehaviour
     {
         if (mIsWalled && !mIsGrounded)
         {
-            Debug.Log("attempting wallrun");
             mAdvancedMovement.Wallrun();
         }
         if ((!mIsWalled || mIsGrounded) && mIsWallRunning)
