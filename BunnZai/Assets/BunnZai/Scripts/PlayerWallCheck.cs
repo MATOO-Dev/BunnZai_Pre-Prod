@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerGroundCheck : MonoBehaviour
+public class PlayerWallCheck : MonoBehaviour
 {
     public Player mPlayer;
     private void Start()
@@ -10,14 +10,13 @@ public class PlayerGroundCheck : MonoBehaviour
         mPlayer = this.gameObject.GetComponentInParent<Player>();
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        mPlayer.mIsGrounded = true;
-        mPlayer.mAerialJumpUsed = false;
+        mPlayer.mIsWalled = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        mPlayer.mIsGrounded = false;
+        mPlayer.mIsWalled = false;
     }
 }

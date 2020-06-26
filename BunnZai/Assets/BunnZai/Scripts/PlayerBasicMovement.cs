@@ -12,11 +12,9 @@ public class PlayerBasicMovement : MonoBehaviour
 {
     Player mPlayer;
     float turningVelocity;
-    float aerialTurningVelocity;
     //change to getcomponent with cam/cinemachine
     //add script to cam to get player reference
     public Transform cam;
-    public Jumptype JType = Jumptype.AddForce;
 
     public void Awake()
     {
@@ -49,7 +47,7 @@ public class PlayerBasicMovement : MonoBehaviour
             //smooth out player rotation towards that angle
             float directionAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turningVelocity, timeToUse);
             //apply smoothed rotation
-            transform.rotation = Quaternion.Euler(0f, directionAngle, 0f);
+            transform.rotation = Quaternion.Euler(transform.rotation.x, directionAngle, transform.rotation.z);
 
             //add movement force to rigidbody
             Vector3 moveDirection = Quaternion.Euler(0f, directionAngle, 0f) * Vector3.forward * speedToUse;
@@ -67,12 +65,7 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void Jump()
     {
-        if (JType == Jumptype.AddForce)
-        {
-            mPlayer.mRigidBody.AddForce(Vector3.up * mPlayer.mJumpForce);
-            mPlayer.mRigidBody.AddForce(transform.forward * mPlayer.mJumpForceForward);
-        }
-        else
+        if (mPlayer.mIsGrounded || (!mPlayer.mIsGrounded && !mPlayer.mAerialJumpUsed))
         {
             mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidBody.velocity.y);
             mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
@@ -92,7 +85,6 @@ public class PlayerBasicMovement : MonoBehaviour
         }
 
         Vector3 horizontalVelocity = new Vector3(mPlayer.mRigidBody.velocity.x, 0, mPlayer.mRigidBody.velocity.z);
-        Debug.Log(horizontalVelocity.magnitude);
         if (horizontalVelocity.magnitude > mPlayer.mMaxVelocity)
         {
             horizontalVelocity = horizontalVelocity.normalized * mPlayer.mMaxVelocity;
