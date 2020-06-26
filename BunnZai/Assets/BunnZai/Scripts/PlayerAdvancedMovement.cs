@@ -7,25 +7,25 @@ public class PlayerAdvancedMovement : MonoBehaviour
 {
     Player mPlayer;
     private float mGravityScale;
+
     private void Awake()
     {
         mPlayer = GetComponent<Player>();
     }
-    private void FixedUpdate()
-    {
-        mPlayer.mRigidBody.AddForce(Physics.gravity * mGravityScale);
-    }
+
     public void Dash()
     {
-        mPlayer.mDashTimer = 3;
+        mPlayer.mDashTimer = mPlayer.mDashCooldown;
         mPlayer.mIsDashing = true;
         mPlayer.mRigidBody.velocity += mPlayer.mDirection * new Vector3(1, 1, 20);
     }
+
     public void EndDash()
     {
         mPlayer.mIsDashing = false;
         mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity.normalized;
     }
+
     public void Wallrun()
     {
         mPlayer.mIsWallRunning = true;
@@ -35,7 +35,7 @@ public class PlayerAdvancedMovement : MonoBehaviour
             hitInfoRight.collider.CompareTag("Wall") && mPlayer.mWallRunAvailable)
         {
             mPlayer.mWallRunAvailable = false;
-            mPlayer.transform.Rotate(new Vector3(0,0,10));
+            mPlayer.transform.Rotate(new Vector3(0, 0, 10));
         }
 
         if (Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.left), out hitInfoLeft, 1f) &&
@@ -44,9 +44,8 @@ public class PlayerAdvancedMovement : MonoBehaviour
             mPlayer.mWallRunAvailable = false;
             mPlayer.transform.Rotate(new Vector3(0, 0, -10));
         }
-
-        mGravityScale = -0.85f;
-        mPlayer.mRigidBody.velocity *= 0.995f;
+        //if(velocity > wallrunvelocity)
+        //mPlayer.mRigidBody.velocity *= 0.995f;
     }
 
     public void EndWallrun()
@@ -54,13 +53,14 @@ public class PlayerAdvancedMovement : MonoBehaviour
         mPlayer.mWallRunAvailable = true;
         mPlayer.mIsWallRunning = false;
         mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
-        mGravityScale = 0;
     }
+
     public void WallJump()
     {
         mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, 15);
         mPlayer.mIsWallRunning = false;
     }
+
     public void HandleVelocityFalloff()
     {
         if (mPlayer.mIsGrounded && !Input.GetKeyDown("space"))

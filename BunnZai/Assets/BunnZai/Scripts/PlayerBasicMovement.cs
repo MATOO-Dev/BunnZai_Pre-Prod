@@ -12,7 +12,6 @@ public class PlayerBasicMovement : MonoBehaviour
 {
     Player mPlayer;
     float turningVelocity;
-    float aerialTurningVelocity;
     //change to getcomponent with cam/cinemachine
     //add script to cam to get player reference
     public Transform cam;
@@ -66,17 +65,13 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void Jump()
     {
-        if (mPlayer.mIsGrounded)
+        if (mPlayer.mIsGrounded || (!mPlayer.mIsGrounded && !mPlayer.mAerialJumpUsed))
         {
             mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidBody.velocity.y);
             mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
         }
-        else if (!mPlayer.mAerialJumpUsed)
-        {
-            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidBody.velocity.y);
-            mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
+        if (!mPlayer.mIsGrounded)
             mPlayer.mAerialJumpUsed = true;
-        }
     }
 
     public void UpdateVelocities()
