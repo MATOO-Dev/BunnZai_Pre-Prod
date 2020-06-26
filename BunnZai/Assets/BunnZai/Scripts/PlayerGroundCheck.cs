@@ -10,17 +10,14 @@ public class PlayerGroundCheck : MonoBehaviour
         mPlayer = this.gameObject.GetComponentInParent<Player>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        mPlayer.mFloorAmount++;
         mPlayer.mIsGrounded = true;
         mPlayer.mAerialJumpUsed = false;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        mPlayer.mFloorAmount--;
-        if (mPlayer.mFloorAmount == 0)
-            mPlayer.mIsGrounded = false;
+        mPlayer.mIsGrounded = false;
     }
 }

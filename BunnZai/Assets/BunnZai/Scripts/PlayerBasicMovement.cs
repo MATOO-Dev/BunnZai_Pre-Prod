@@ -16,7 +16,6 @@ public class PlayerBasicMovement : MonoBehaviour
     //change to getcomponent with cam/cinemachine
     //add script to cam to get player reference
     public Transform cam;
-    public Jumptype JType = Jumptype.AddForce;
 
     public void Awake()
     {
@@ -67,20 +66,17 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void Jump()
     {
-        //mPlayer.mRigidBody.velocity = mPlayer.mDirection * jumpVector;
-
-        if (JType == Jumptype.AddForce)
-        {
-            mPlayer.mRigidBody.AddForce(Vector3.up * mPlayer.mJumpForce);
-            mPlayer.mRigidBody.AddForce(transform.forward * mPlayer.mJumpForceForward);
-        }
-        else
+        if (mPlayer.mIsGrounded)
         {
             mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidBody.velocity.y);
             mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
         }
-        if (!mPlayer.mIsGrounded)
+        else if (!mPlayer.mAerialJumpUsed)
+        {
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidBody.velocity.y);
+            mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
             mPlayer.mAerialJumpUsed = true;
+        }
     }
 
     public void UpdateVelocities()
@@ -94,7 +90,6 @@ public class PlayerBasicMovement : MonoBehaviour
         }
 
         Vector3 horizontalVelocity = new Vector3(mPlayer.mRigidBody.velocity.x, 0, mPlayer.mRigidBody.velocity.z);
-        Debug.Log(horizontalVelocity.magnitude);
         if (horizontalVelocity.magnitude > mPlayer.mMaxVelocity)
         {
             horizontalVelocity = horizontalVelocity.normalized * mPlayer.mMaxVelocity;

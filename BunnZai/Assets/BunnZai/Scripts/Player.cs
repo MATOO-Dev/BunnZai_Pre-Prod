@@ -23,7 +23,6 @@ public class Player : MonoBehaviour
     public bool mWallRunAvailable;
     public bool mIsDashing;
     public bool mAerialJumpUsed;
-    public int mFloorAmount;
     public Quaternion mDirection;
 
     [Header("Movement Variables")]
@@ -33,8 +32,6 @@ public class Player : MonoBehaviour
     public float mStrafeTurnTime;           //time to turn when strafing
     public float mMaxVelocity;              //~ horizontal terminal velocity
     public float mDecelerationMultiplier;   //used for breaking
-    public float mJumpForce;                //maybe rename to jumpheight instead? base on implementation
-    public float mJumpForceForward;         //force applied forward when jumping
     public float mJumpVelocity;             //velocity applied when jumping
     public float mJumpVelocityForward;      //velocity applied forward when jumping
     public float mFallSpeedMultiplier;      //multiplier for falling acceleration
@@ -67,32 +64,33 @@ public class Player : MonoBehaviour
     {
         Debug.DrawLine(transform.position, transform.position + transform.forward, Color.red);
         UpdateInputValues();
+        //call jump functions
+        if (Input.GetButtonDown("Jump"))
+        {
+            Debug.Log("jump key pressed");
+            if (!mIsWallRunning)
+                mBasicMovement.Jump();
+            else
+                mAdvancedMovement.WallJump();
+        }
+        if (Input.GetButtonDown("Dash"))
+        {
+            if (mDashTimer <= 0)
+                mAdvancedMovement.Dash();
+        }
     }
 
     void FixedUpdate() //50x/s (default value), use for physics
     {
-        //call jump functions
-        if (Input.GetButtonDown("Jump"))
-        {
-            if (!mAerialJumpUsed && !mIsWallRunning)
-                mBasicMovement.Jump();
-            else if(mIsWallRunning)
-                mAdvancedMovement.WallJump();
-        }
-        if(mIsWalled && !mIsGrounded)
+        if (mIsWalled && !mIsGrounded)
             mAdvancedMovement.Wallrun();
         else if (!mWallRunAvailable)
             mAdvancedMovement.EndWallrun();
-        if (Input.GetButtonDown("Dash"))
-        {
-            if(mDashTimer<=0)
-                mAdvancedMovement.Dash();
-        }
         if (mDashTimer > 0)
             mDashTimer -= Time.deltaTime;
         if (mDashTimer <= 2.7f && mIsDashing)
             mAdvancedMovement.EndDash();
-      
+
         mDirection = transform.rotation;
         mBasicMovement.AddMovementInput();
         mBasicMovement.UpdateVelocities();
