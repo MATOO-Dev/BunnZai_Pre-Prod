@@ -40,7 +40,7 @@ public class PlayerBasicMovement : MonoBehaviour
             }
             else
             {
-                speedToUse = mPlayer.mRigidRef.velocity.magnitude;
+                speedToUse = mPlayer.mRigidBody.velocity.magnitude;
                 //speedToUse = mPlayer.mMaxWalkSpeed;
                 timeToUse = mPlayer.mStrafeTurnTime;
             }
@@ -55,13 +55,13 @@ public class PlayerBasicMovement : MonoBehaviour
             Vector3 moveDirection = Quaternion.Euler(0f, directionAngle, 0f) * Vector3.forward * speedToUse;
 
             //potentially implement acceleration instead of instant max speed later on
-            mPlayer.mRigidRef.velocity = new Vector3(moveDirection.x, mPlayer.mRigidRef.velocity.y, moveDirection.z);
+            mPlayer.mRigidBody.velocity = new Vector3(moveDirection.x, mPlayer.mRigidBody.velocity.y, moveDirection.z);
         }
         else if (mPlayer.mIsGrounded)
         {
             //deceleration if nothing is pressed
             //mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier, but in fancy;
-            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x * mPlayer.mDecelerationMultiplier, mPlayer.mRigidRef.velocity.y, mPlayer.mRigidRef.velocity.z * mPlayer.mDecelerationMultiplier);
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x * mPlayer.mDecelerationMultiplier, mPlayer.mRigidBody.velocity.y, mPlayer.mRigidBody.velocity.z * mPlayer.mDecelerationMultiplier);
         }
     }
 
@@ -69,13 +69,13 @@ public class PlayerBasicMovement : MonoBehaviour
     {
         if (JType == Jumptype.AddForce)
         {
-            mPlayer.mRigidRef.AddForce(Vector3.up * mPlayer.mJumpForce);
-            mPlayer.mRigidRef.AddForce(transform.forward * mPlayer.mJumpForceForward);
+            mPlayer.mRigidBody.AddForce(Vector3.up * mPlayer.mJumpForce);
+            mPlayer.mRigidBody.AddForce(transform.forward * mPlayer.mJumpForceForward);
         }
         else
         {
-            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidRef.velocity.y);
-            mPlayer.mRigidRef.velocity = mPlayer.mRigidRef.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidBody.velocity.y);
+            mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
         }
         if (!mPlayer.mIsGrounded)
             mPlayer.mAerialJumpUsed = true;
@@ -83,20 +83,20 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void UpdateVelocities()
     {
-        if (mPlayer.mRigidRef.velocity.y < 0)
-            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, mPlayer.mRigidRef.velocity.y * mPlayer.mFallSpeedMultiplier, mPlayer.mRigidRef.velocity.z);
+        if (mPlayer.mRigidBody.velocity.y < 0)
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.y * mPlayer.mFallSpeedMultiplier, mPlayer.mRigidBody.velocity.z);
 
-        if (mPlayer.mRigidRef.velocity.y < -mPlayer.mTerminalVelocity)
+        if (mPlayer.mRigidBody.velocity.y < -mPlayer.mTerminalVelocity)
         {
-            mPlayer.mRigidRef.velocity = new Vector3(mPlayer.mRigidRef.velocity.x, -mPlayer.mTerminalVelocity, mPlayer.mRigidRef.velocity.z);
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, -mPlayer.mTerminalVelocity, mPlayer.mRigidBody.velocity.z);
         }
 
-        Vector3 horizontalVelocity = new Vector3(mPlayer.mRigidRef.velocity.x, 0, mPlayer.mRigidRef.velocity.z);
+        Vector3 horizontalVelocity = new Vector3(mPlayer.mRigidBody.velocity.x, 0, mPlayer.mRigidBody.velocity.z);
         Debug.Log(horizontalVelocity.magnitude);
         if (horizontalVelocity.magnitude > mPlayer.mMaxVelocity)
         {
             horizontalVelocity = horizontalVelocity.normalized * mPlayer.mMaxVelocity;
-            mPlayer.mRigidRef.velocity = new Vector3(horizontalVelocity.x, mPlayer.mRigidRef.velocity.y, horizontalVelocity.z);
+            mPlayer.mRigidBody.velocity = new Vector3(horizontalVelocity.x, mPlayer.mRigidBody.velocity.y, horizontalVelocity.z);
         }
     }
 }

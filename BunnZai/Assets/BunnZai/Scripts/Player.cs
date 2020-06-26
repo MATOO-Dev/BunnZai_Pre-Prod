@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     [Header("Components")]
     [HideInInspector] public CapsuleCollider mPlayerCollider;
     [HideInInspector] public BoxCollider mGroundCheckCollider;
-    [HideInInspector] public Rigidbody mRigidRef;
+    [HideInInspector] public Rigidbody mRigidBody;
 
     [Header("Movement Parameters")]
     public bool mIsGrounded;
@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
         //get components
         mPlayerCollider = GetComponent<CapsuleCollider>();
         mGroundCheckCollider = GetComponent<BoxCollider>();
-        mRigidRef = GetComponent<Rigidbody>();
+        mRigidBody = GetComponent<Rigidbody>();
     }
 
     private void Update() //every frame (fps dependant), use for graphics/input
