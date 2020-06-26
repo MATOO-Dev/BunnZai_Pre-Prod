@@ -19,8 +19,12 @@ public class Player : MonoBehaviour
     [Header("Movement Parameters")]
     public bool mIsGrounded;
     public bool mIsWalled;
+    public bool mIsWallRunning;
+    public bool mWallRunAvailable;
+    public bool mIsDashing;
     public bool mAerialJumpUsed;
     public int mFloorAmount;
+    public Quaternion mDirection;
 
     [Header("Movement Variables")]
     public float mMaxWalkSpeed;             //max walking speed
@@ -35,6 +39,8 @@ public class Player : MonoBehaviour
     public float mJumpVelocityForward;      //velocity applied forward when jumping
     public float mFallSpeedMultiplier;      //multiplier for falling acceleration
     public float mTerminalVelocity;         //terminal velocity
+    public float mDashTimer;
+
 
     [Header("Private Variables")]
     [HideInInspector] public float mForwardAxisDelta;
@@ -68,10 +74,26 @@ public class Player : MonoBehaviour
         //call jump functions
         if (Input.GetButtonDown("Jump"))
         {
-            if (!mAerialJumpUsed)
+            if (!mAerialJumpUsed && !mIsWallRunning)
                 mBasicMovement.Jump();
+            else if(mIsWallRunning)
+                mAdvancedMovement.WallJump();
         }
-
+        if(mIsWalled && !mIsGrounded)
+            mAdvancedMovement.Wallrun();
+        else if (!mWallRunAvailable)
+            mAdvancedMovement.EndWallrun();
+        if (Input.GetButtonDown("Dash"))
+        {
+            if(mDashTimer<=0)
+                mAdvancedMovement.Dash();
+        }
+        if (mDashTimer > 0)
+            mDashTimer -= Time.deltaTime;
+        if (mDashTimer <= 2.7f && mIsDashing)
+            mAdvancedMovement.EndDash();
+      
+        mDirection = transform.rotation;
         mBasicMovement.AddMovementInput();
         mBasicMovement.UpdateVelocities();
     }

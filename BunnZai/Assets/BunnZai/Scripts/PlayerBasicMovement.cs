@@ -49,7 +49,7 @@ public class PlayerBasicMovement : MonoBehaviour
             //smooth out player rotation towards that angle
             float directionAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turningVelocity, timeToUse);
             //apply smoothed rotation
-            transform.rotation = Quaternion.Euler(0f, directionAngle, 0f);
+            transform.rotation = Quaternion.Euler(transform.rotation.x, directionAngle, transform.rotation.z);
 
             //add movement force to rigidbody
             Vector3 moveDirection = Quaternion.Euler(0f, directionAngle, 0f) * Vector3.forward * speedToUse;
@@ -67,6 +67,8 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void Jump()
     {
+        //mPlayer.mRigidBody.velocity = mPlayer.mDirection * jumpVector;
+
         if (JType == Jumptype.AddForce)
         {
             mPlayer.mRigidBody.AddForce(Vector3.up * mPlayer.mJumpForce);
