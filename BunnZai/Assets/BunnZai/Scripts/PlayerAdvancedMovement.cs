@@ -40,8 +40,6 @@ public class PlayerAdvancedMovement : MonoBehaviour
         mPlayer.mIsWallRunning = true;
         if (mPlayer.mWallRunAvailable)
         {
-            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, 0, mPlayer.mRigidBody.velocity.z);
-
             if (isRight && hitInfoRight.collider.CompareTag("Wall"))
             {
                 mPlayer.mWallRunAvailable = false;
