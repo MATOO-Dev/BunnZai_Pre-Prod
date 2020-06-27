@@ -33,23 +33,28 @@ public class PlayerAdvancedMovement : MonoBehaviour
 
     public void Wallrun()
     {
-        mPlayer.mIsWallRunning = true;
         RaycastHit hitInfoRight;
         RaycastHit hitInfoLeft;
-        if (Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.right), out hitInfoRight, 1f) &&
-            hitInfoRight.collider.CompareTag("Wall") && mPlayer.mWallRunAvailable)
+        bool isRight = Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.right), out hitInfoRight, 1f);
+        bool isLeft = Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.left), out hitInfoLeft, 1f);
+        mPlayer.mIsWallRunning = true;
+        if (mPlayer.mWallRunAvailable)
         {
-            mPlayer.mWallRunAvailable = false;
-            //mPlayer.transform.Rotate(0, 0, 90);
-            transform.eulerAngles = Vector3.Lerp(transform.rotation.eulerAngles, new Vector3(0, 0, 90), Time.deltaTime);
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, 0, mPlayer.mRigidBody.velocity.z);
+
+            if (isRight && hitInfoRight.collider.CompareTag("Wall"))
+            {
+                mPlayer.mWallRunAvailable = false;
+                mPlayer.transform.Rotate(0, 0, 10);  //Collider Problem
+            }
+
+            if (isLeft && hitInfoLeft.collider.CompareTag("Wall"))
+            {
+                mPlayer.mWallRunAvailable = false;
+                mPlayer.transform.Rotate(0, 0, -10);
+            }
         }
 
-        if (Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.left), out hitInfoLeft, 1f) &&
-            hitInfoLeft.collider.CompareTag("Wall") && mPlayer.mWallRunAvailable)
-        {
-            mPlayer.mWallRunAvailable = false;
-            //mPlayer.transform.Rotate(0, 0, -90);
-        }
         //if(velocity > wallrunvelocity)
         //mPlayer.mRigidBody.velocity *= 0.995f;
     }
@@ -58,13 +63,12 @@ public class PlayerAdvancedMovement : MonoBehaviour
     {
         mPlayer.mWallRunAvailable = true;
         mPlayer.mIsWallRunning = false;
-        //mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
+        mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
     }
 
     public void WallJump()
     {
-        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, 15);
-        mPlayer.mIsWallRunning = false;
+        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, 30);
     }
 
     public void HandleVelocityFalloff()

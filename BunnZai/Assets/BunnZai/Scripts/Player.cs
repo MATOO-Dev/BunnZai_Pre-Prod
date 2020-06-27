@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     public bool mIsGrounded;
     public bool mIsWalled;
     public bool mIsWallRunning;
-    public bool mWallRunAvailable;
+    public bool mWallRunAvailable = true;
     public bool mIsDashing;
     public bool mAerialJumpUsed;
 
@@ -65,6 +65,7 @@ public class Player : MonoBehaviour
 
     private void Update() //every frame (fps dependant), use for graphics/input
     {
+        mDirection = transform.rotation;
         UpdateInputValues();
         //call jump functions
         if (Input.GetButtonDown("Jump"))
@@ -79,10 +80,6 @@ public class Player : MonoBehaviour
             if (mDashTimer <= 0)
                 mAdvancedMovement.Dash();
         }
-    }
-
-    void FixedUpdate() //50x/s (default value), use for physics
-    {
         if (mIsWalled && !mIsGrounded)
         {
             mAdvancedMovement.Wallrun();
@@ -95,9 +92,11 @@ public class Player : MonoBehaviour
         if (mDashTimer <= (mDashCooldown - mDashDuration) && mIsDashing)
             mAdvancedMovement.EndDash();
 
-
-        mDirection = transform.rotation;
         mBasicMovement.AddMovementInput();
+    }
+
+    void FixedUpdate() //50x/s (default value), use for physics
+    {
         mBasicMovement.UpdateVelocities();
         UpdateExternalForces();
     }
@@ -115,7 +114,7 @@ public class Player : MonoBehaviour
 
     public void UpdateExternalForces()
     {
-        if (mRigidBody.velocity.y < 0 && mIsWalled)
+        if (mRigidBody.velocity.y <= 0 && mIsWalled)
             mRigidBody.AddForce(Physics.gravity * (mWallRunGravity - 1));
     }
 }
