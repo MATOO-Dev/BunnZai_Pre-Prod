@@ -22,7 +22,9 @@ public class PlayerAdvancedMovement : MonoBehaviour
     {
         mPlayer.mDashTimer = mPlayer.mDashCooldown;
         mPlayer.mIsDashing = true;
-        mPlayer.mRigidBody.velocity += mPlayer.mDirection * new Vector3(1, 1, 20);
+        //mPlayer.transform.position = Vector3.MoveTowards(transform.position, mPlayer.transform.position + mPlayer.mDirection * new Vector3(0, 0, 10), 10);
+        //mPlayer.transform.Translate(new Vector3(0, 0, 10));
+        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, mPlayer.mDashSpeed);
     }
 
     public void EndDash()
@@ -42,14 +44,16 @@ public class PlayerAdvancedMovement : MonoBehaviour
         {
             if (isRight && hitInfoRight.collider.CompareTag("Wall"))
             {
-                mPlayer.mWallRunAvailable = false;
-                mPlayer.transform.Rotate(0, 0, 10);  //Collider Problem
+               // mPlayer.mWallRunAvailable = false;
+                mPlayer.mRigidBody.velocity = new Vector3(0, mPlayer.mRigidBody.velocity.y,6);
+                //mPlayer.transform.GetChild(0).Rotate(0, 0, 10);  //Collider Problem
             }
 
             if (isLeft && hitInfoLeft.collider.CompareTag("Wall"))
             {
-                mPlayer.mWallRunAvailable = false;
-                mPlayer.transform.Rotate(0, 0, -10);
+               // mPlayer.mWallRunAvailable = false;
+                mPlayer.mRigidBody.velocity = new Vector3(0, mPlayer.mRigidBody.velocity.y, 6);
+                //mPlayer.transform.GetChild(0).Rotate(0, 0, -10);
             }
         }
 
@@ -66,7 +70,7 @@ public class PlayerAdvancedMovement : MonoBehaviour
 
     public void WallJump()
     {
-        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, 30);
+        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1,mPlayer.mWallJumpSpeed);
     }
 
     public void HandleVelocityFalloff()

@@ -38,6 +38,8 @@ public class Player : MonoBehaviour
     public float mDashCooldown;             //dash cooldown, starts at beginning of dash (aka end of dash remaining cooldown = cooldown-duration)
     public float mDashDuration;             //dash duration
     public float mWallRunGravity;           //gravity multiplier during wallrun
+    public float mDashSpeed;
+    public float mWallJumpSpeed;
 
 
     [Header("Local Variables")]
