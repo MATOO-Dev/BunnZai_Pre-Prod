@@ -22,9 +22,8 @@ public class PlayerAdvancedMovement : MonoBehaviour
     {
         mPlayer.mDashTimer = mPlayer.mDashCooldown;
         mPlayer.mIsDashing = true;
-        //mPlayer.transform.position = Vector3.MoveTowards(transform.position, mPlayer.transform.position + mPlayer.mDirection * new Vector3(0, 0, 10), 10);
         //mPlayer.transform.Translate(new Vector3(0, 0, 10));
-        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, mPlayer.mDashSpeed);
+        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed);
     }
 
     public void EndDash()
@@ -37,23 +36,22 @@ public class PlayerAdvancedMovement : MonoBehaviour
     {
         RaycastHit hitInfoRight;
         RaycastHit hitInfoLeft;
-        bool isRight = Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.right), out hitInfoRight, 1f);
-        bool isLeft = Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.left), out hitInfoLeft, 1f);
+        bool isRight = Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.right), out hitInfoRight, 2f);
+        bool isLeft = Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.left), out hitInfoLeft, 2f);
         mPlayer.mIsWallRunning = true;
+       
         if (mPlayer.mWallRunAvailable)
         {
             if (isRight && hitInfoRight.collider.CompareTag("Wall"))
             {
-               // mPlayer.mWallRunAvailable = false;
-                mPlayer.mRigidBody.velocity = new Vector3(0, mPlayer.mRigidBody.velocity.y,6);
-                //mPlayer.transform.GetChild(0).Rotate(0, 0, 10);  //Collider Problem
+                // mPlayer.mWallRunAvailable = false;  <- if only need to animate once
+                // Animate right
             }
 
             if (isLeft && hitInfoLeft.collider.CompareTag("Wall"))
             {
-               // mPlayer.mWallRunAvailable = false;
-                mPlayer.mRigidBody.velocity = new Vector3(0, mPlayer.mRigidBody.velocity.y, 6);
-                //mPlayer.transform.GetChild(0).Rotate(0, 0, -10);
+                // mPlayer.mWallRunAvailable = false; <- if only need to animate once
+                // Animate left
             }
         }
 
@@ -63,9 +61,11 @@ public class PlayerAdvancedMovement : MonoBehaviour
 
     public void EndWallrun()
     {
+        //if(mPlayer.mIsWallRunning)
+            //mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
         mPlayer.mWallRunAvailable = true;
         mPlayer.mIsWallRunning = false;
-        mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
+        
     }
 
     public void WallJump()
