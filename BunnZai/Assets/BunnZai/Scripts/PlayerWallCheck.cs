@@ -12,11 +12,13 @@ public class PlayerWallCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        mPlayer.mIsWalled = true;
+        if (other.CompareTag("Wall"))
+            mPlayer.mIsWalled = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        mPlayer.mIsWalled = false;
+        if (other.CompareTag("Wall") && mPlayer.mIsWalled)
+            mPlayer.mIsWalled = false;
     }
 }

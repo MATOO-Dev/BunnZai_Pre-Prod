@@ -6,24 +6,18 @@ using UnityEngine.PlayerLoop;
 public class PlayerAdvancedMovement : MonoBehaviour
 {
     Player mPlayer;
-    private float mGravityScale;
-
+  
     private void Awake()
     {
         mPlayer = GetComponent<Player>();
-    }
-
-    private void Start()
-    {
-        //mPlayer.transform.Rotate(0, 0, 90);
     }
 
     public void Dash()
     {
         mPlayer.mDashTimer = mPlayer.mDashCooldown;
         mPlayer.mIsDashing = true;
-        //mPlayer.transform.Translate(new Vector3(0, 0, 10));
-        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed);
+        //mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, mPlayer.mDashSpeed);
+        mPlayer.mRigidBody.AddForce(mPlayer.mDirection* new Vector3(1, 1, mPlayer.mDashSpeed),ForceMode.Impulse); //Ground collision hinders dash
     }
 
     public void EndDash()

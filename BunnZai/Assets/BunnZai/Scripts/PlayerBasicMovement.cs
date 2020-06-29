@@ -38,7 +38,7 @@ public class PlayerBasicMovement : MonoBehaviour
             }
             else
             {
-                speedToUse = mPlayer.mRigidBody.velocity.magnitude;
+                speedToUse = mPlayer.mRigidBody.velocity.magnitude*0.9f;
                 //speedToUse = mPlayer.mMaxWalkSpeed;
                 timeToUse = mPlayer.mStrafeTurnTime;
             }

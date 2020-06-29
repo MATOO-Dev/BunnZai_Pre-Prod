@@ -80,7 +80,10 @@ public class Player : MonoBehaviour
         if (Input.GetButtonDown("Dash"))
         {
             if (mDashTimer <= 0)
+            {
+                mRigidBody.useGravity = false;
                 mAdvancedMovement.Dash();
+            }
         }
         if (mIsWalled && !mIsGrounded)
         {
@@ -92,7 +95,10 @@ public class Player : MonoBehaviour
         if (mDashTimer > 0)
             mDashTimer -= Time.deltaTime;
         if (mDashTimer <= (mDashCooldown - mDashDuration) && mIsDashing)
+        {
+            mRigidBody.useGravity = true;
             mAdvancedMovement.EndDash();
+        }
 
         mBasicMovement.AddMovementInput();
     }
