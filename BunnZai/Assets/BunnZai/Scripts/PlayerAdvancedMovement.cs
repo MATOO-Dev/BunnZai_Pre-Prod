@@ -6,7 +6,7 @@ using UnityEngine.PlayerLoop;
 public class PlayerAdvancedMovement : MonoBehaviour
 {
     Player mPlayer;
-  
+
     private void Awake()
     {
         mPlayer = GetComponent<Player>();
@@ -17,7 +17,12 @@ public class PlayerAdvancedMovement : MonoBehaviour
         mPlayer.mDashTimer = mPlayer.mDashCooldown;
         mPlayer.mIsDashing = true;
         //mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, mPlayer.mDashSpeed);
-        mPlayer.mRigidBody.AddForce(mPlayer.mDirection* new Vector3(1, 1, mPlayer.mDashSpeed),ForceMode.Impulse); //Ground collision hinders dash
+        if (!mPlayer.mIsGrounded)
+            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed), ForceMode.Impulse); //Ground collision hinders dash
+        else
+        {
+            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed), ForceMode.Impulse);
+        }
     }
 
     public void EndDash()
@@ -33,9 +38,12 @@ public class PlayerAdvancedMovement : MonoBehaviour
         bool isRight = Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.right), out hitInfoRight, 2f);
         bool isLeft = Physics.Raycast(transform.position, mPlayer.transform.TransformDirection(Vector3.left), out hitInfoLeft, 2f);
         mPlayer.mIsWallRunning = true;
-       
+
         if (mPlayer.mWallRunAvailable)
         {
+            mPlayer.mWallRunAvailable = false;
+            if (mPlayer.mRigidBody.velocity.y < 0)
+                mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, 0, mPlayer.mRigidBody.velocity.z);
             if (isRight && hitInfoRight.collider.CompareTag("Wall"))
             {
                 // mPlayer.mWallRunAvailable = false;  <- if only need to animate once
@@ -56,15 +64,15 @@ public class PlayerAdvancedMovement : MonoBehaviour
     public void EndWallrun()
     {
         //if(mPlayer.mIsWallRunning)
-            //mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
+        //mPlayer.transform.rotation = new Quaternion(mPlayer.transform.rotation.x, mPlayer.transform.rotation.y, 0, 1);
         mPlayer.mWallRunAvailable = true;
         mPlayer.mIsWallRunning = false;
-        
+
     }
 
     public void WallJump()
     {
-        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1,mPlayer.mWallJumpSpeed);
+        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, mPlayer.mWallJumpSpeed);
     }
 
     public void HandleVelocityFalloff()
