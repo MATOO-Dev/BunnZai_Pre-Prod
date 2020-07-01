@@ -40,6 +40,8 @@ public class Player : MonoBehaviour
     public float mWallRunGravity;           //gravity multiplier during wallrun
     public float mDashSpeed;
     public float mWallJumpSpeed;
+    [HideInInspector]
+    public Quaternion mWallJumpDir;
 
 
     [Header("Local Variables")]

@@ -38,7 +38,7 @@ public class PlayerBasicMovement : MonoBehaviour
             }
             else
             {
-                speedToUse = mPlayer.mRigidBody.velocity.magnitude*0.95f;
+                speedToUse = mPlayer.mRigidBody.velocity.magnitude * 0.95f;
                 //speedToUse = mPlayer.mMaxWalkSpeed;
                 timeToUse = mPlayer.mStrafeTurnTime;
             }
@@ -47,6 +47,9 @@ public class PlayerBasicMovement : MonoBehaviour
             //smooth out player rotation towards that angle
             float directionAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turningVelocity, timeToUse);
             //apply smoothed rotation
+            //if (mPlayer.mIsWalled)
+            //    transform.rotation = new Quaternion(transform.rotation.x, mPlayer.mWallJumpDir.y, transform.rotation.z, 1);
+            //else
             transform.rotation = Quaternion.Euler(transform.rotation.x, directionAngle, transform.rotation.z);
 
             //add movement force to rigidbody
@@ -77,7 +80,7 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void UpdateVelocities()
     {
-        if (mPlayer.mRigidBody.velocity.y < 0 && mPlayer.mRigidBody.velocity.y >-5 && !mPlayer.mIsWalled)
+        if (mPlayer.mRigidBody.velocity.y < 0 && mPlayer.mRigidBody.velocity.y > -5 && !mPlayer.mIsWalled)
             mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.y * mPlayer.mFallSpeedMultiplier, mPlayer.mRigidBody.velocity.z);
 
         if (mPlayer.mRigidBody.velocity.y < -mPlayer.mTerminalVelocity)

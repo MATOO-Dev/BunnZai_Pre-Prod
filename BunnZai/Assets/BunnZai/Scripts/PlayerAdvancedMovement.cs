@@ -6,7 +6,8 @@ using UnityEngine.PlayerLoop;
 public class PlayerAdvancedMovement : MonoBehaviour
 {
     Player mPlayer;
-
+    private Vector3 normal;
+   
     private void Awake()
     {
         mPlayer = GetComponent<Player>();
@@ -47,17 +48,28 @@ public class PlayerAdvancedMovement : MonoBehaviour
                 mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, 0, mPlayer.mRigidBody.velocity.z);
             if (isRight && hitInfoRight.collider.CompareTag("Wall"))
             {
+                normal = hitInfoRight.normal;
+                if (Input.GetKeyDown(KeyCode.A))
+                    mPlayer.mWallJumpDir.eulerAngles = new Vector3(normal.x + 10, normal.y, normal.z);
+                if (Input.GetKeyDown(KeyCode.D))
+                    mPlayer.mWallJumpDir.eulerAngles = new Vector3(normal.x - 10, normal.y, normal.z);
+            
                 // mPlayer.mWallRunAvailable = false;  <- if only need to animate once
                 // Animate right
             }
-
             if (isLeft && hitInfoLeft.collider.CompareTag("Wall"))
             {
+                normal = hitInfoLeft.normal;
+                if (Input.GetKeyDown(KeyCode.A))
+                    mPlayer.mWallJumpDir.eulerAngles = new Vector3(normal.x - 10, normal.y, normal.z);
+                if (Input.GetKeyDown(KeyCode.D))
+                    mPlayer.mWallJumpDir.eulerAngles = new Vector3(normal.x + 10, normal.y, normal.z);
                 // mPlayer.mWallRunAvailable = false; <- if only need to animate once
                 // Animate left
             }
+            mPlayer.mWallJumpDir = Quaternion.Euler(normal);
         }
-
+        
         //if(velocity > wallrunvelocity)
         //mPlayer.mRigidBody.velocity *= 0.995f;
     }
