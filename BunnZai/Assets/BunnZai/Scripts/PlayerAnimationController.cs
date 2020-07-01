@@ -24,5 +24,6 @@ public class PlayerAnimationController : MonoBehaviour
         mAnimator.SetBool("isGrounded", mPlayer.mIsGrounded);
         mAnimator.SetBool("aerialJumpUsed", mPlayer.mAerialJumpUsed);
         mAnimator.SetBool("jumpPressed", Input.GetButtonDown("Jump"));
+        mAnimator.SetBool("isWalled", mPlayer.mIsWalled);
     }
 }
