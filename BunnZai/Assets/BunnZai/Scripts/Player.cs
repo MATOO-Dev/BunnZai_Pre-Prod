@@ -31,9 +31,10 @@ public class Player : MonoBehaviour
     public float mDecelerationMultiplier;   //used for breaking
     public float mWalkTurnTime;             //time to turn when moving
     public float mStrafeTurnTime;           //time to turn when strafing
-    public float mMaxVelocity;              //~ horizontal terminal velocity
-    public float mJumpVelocity;             //velocity applied when jumping
-    public float mJumpVelocityForward;      //velocity applied forward when jumping
+    public float mVelocityBuildup;          //multiplier for velocity buildup
+    public float mMaxVelocity;              //horizontal terminal velocity
+    public float mJumpHeight;               //targeted jump height
+    public float mJumpDistanceForward;      //targeted forwards distance of jump
     public float mFallSpeedMultiplier;      //multiplier for falling acceleration
     public float mTerminalVelocity;         //terminal velocity
     public float mDashCooldown;             //dash cooldown, starts at beginning of dash (aka end of dash remaining cooldown = cooldown-duration)
@@ -80,11 +81,6 @@ public class Player : MonoBehaviour
         {
             if (mDashTimer <= 0)
                 mAdvancedMovement.Dash();
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            mRigidBody.velocity = (this.transform.forward * mJumpVelocityForward);
-            Debug.Log("YEET");
         }
     }
 
