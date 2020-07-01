@@ -66,11 +66,13 @@ public class PlayerBasicMovement : MonoBehaviour
     {
         if (mPlayer.mIsGrounded || (!mPlayer.mIsGrounded && !mPlayer.mAerialJumpUsed))
         {
-            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidBody.velocity.y);
-            mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (mPlayer.transform.forward * mPlayer.mJumpVelocityForward);
+            //v = sqrt/height*-2*gravity
+            float jumpVelocity = Mathf.Sqrt(mPlayer.mJumpHeight * -2 * -Physics.gravity.magnitude);
+            //apply v
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, jumpVelocity, mPlayer.mRigidBody.velocity.z);
+            if (!mPlayer.mIsGrounded)
+                mPlayer.mAerialJumpUsed = true;
         }
-        if (!mPlayer.mIsGrounded)
-            mPlayer.mAerialJumpUsed = true;
     }
 
     public void UpdateVelocities()
