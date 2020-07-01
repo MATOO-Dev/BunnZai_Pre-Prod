@@ -54,7 +54,7 @@ public class PlayerBasicMovement : MonoBehaviour
             //potentially implement acceleration instead of instant max speed later on
             mPlayer.mRigidBody.velocity = new Vector3(moveDirection.x, mPlayer.mRigidBody.velocity.y, moveDirection.z);
         }
-        else if (mPlayer.mIsGrounded)
+        else if (mPlayer.mIsGrounded && !mPlayer.mIsDashing)
         {
             //deceleration if nothing is pressed
             //mPlayer.mRigidRef.velocity *= mPlayer.mDecelerationMultiplier, but in fancy;
@@ -79,7 +79,7 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void UpdateVelocities()
     {
-        if (mPlayer.mRigidBody.velocity.y < 0)
+        if (mPlayer.mRigidBody.velocity.y < 0  && !mPlayer.mIsWalled && mPlayer.mRigidBody.velocity.y > -5)
             mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.y * mPlayer.mFallSpeedMultiplier, mPlayer.mRigidBody.velocity.z);
 
         if (mPlayer.mRigidBody.velocity.y < -mPlayer.mTerminalVelocity)
