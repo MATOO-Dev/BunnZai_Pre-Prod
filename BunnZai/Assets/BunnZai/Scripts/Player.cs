@@ -8,8 +8,9 @@ public class Player : MonoBehaviour
     [Header("Linked Scripts")]
     PlayerBasicMovement mBasicMovement;
     PlayerAdvancedMovement mAdvancedMovement;
-    PlayerCameraController mCameraController;
     PlayerCombatController mCombatController;
+    PlayerAnimationController mAnimationController;
+    PlayerCameraController mCameraController;
 
     [Header("Components")]
     [HideInInspector] public CapsuleCollider mPlayerCollider;
@@ -62,8 +63,9 @@ public class Player : MonoBehaviour
         //get linked scripts
         mBasicMovement = GetComponent<PlayerBasicMovement>();
         mAdvancedMovement = GetComponent<PlayerAdvancedMovement>();
-        mCameraController = GetComponent<PlayerCameraController>();
         mCombatController = GetComponent<PlayerCombatController>();
+        mAnimationController = GetComponent<PlayerAnimationController>();
+        mCameraController = GetComponent<PlayerCameraController>();
     }
 
     private void Update() //every frame (fps dependant), use for graphics/input
