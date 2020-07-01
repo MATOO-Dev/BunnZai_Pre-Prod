@@ -21,8 +21,8 @@ public class PlayerAdvancedMovement : MonoBehaviour
             mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed), ForceMode.Impulse); //Ground collision hinders dash
         else
         {
-            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed), ForceMode.Impulse);
-            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed*3), ForceMode.Impulse);
+            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed*2), ForceMode.Impulse);
+            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed*6), ForceMode.Impulse);
         }
     }
 
