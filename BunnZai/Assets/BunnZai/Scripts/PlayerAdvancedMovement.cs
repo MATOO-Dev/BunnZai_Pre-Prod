@@ -17,14 +17,7 @@ public class PlayerAdvancedMovement : MonoBehaviour
     {
         mPlayer.mDashTimer = mPlayer.mDashCooldown;
         mPlayer.mIsDashing = true;
-        //mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, mPlayer.mDashSpeed);
-        if (!mPlayer.mIsGrounded)
-            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed), ForceMode.Impulse); //Ground collision hinders dash
-        else
-        {
-            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed*2), ForceMode.Impulse);
-            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed*6), ForceMode.Impulse);
-        }
+        mPlayer.mRigidBody.velocity += mPlayer.mDirection * new Vector3(1, 1, mPlayer.mDashSpeed);
     }
 
     public void EndDash()

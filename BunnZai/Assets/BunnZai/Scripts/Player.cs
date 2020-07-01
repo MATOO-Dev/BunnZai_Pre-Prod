@@ -45,8 +45,8 @@ public class Player : MonoBehaviour
 
 
     [Header("Local Variables")]
-    public float mDashTimer;                //dash timer
-    public Quaternion mDirection;
+    [HideInInspector] public float mDashTimer;                //dash timer
+    [HideInInspector] public Quaternion mDirection;
     [HideInInspector] public float mForwardAxisDelta;
     [HideInInspector] public float mSidewaysAxisDelta;
 
