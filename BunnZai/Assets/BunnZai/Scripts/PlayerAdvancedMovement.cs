@@ -22,6 +22,7 @@ public class PlayerAdvancedMovement : MonoBehaviour
         else
         {
             mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed), ForceMode.Impulse);
+            mPlayer.mRigidBody.AddForce(mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed*3), ForceMode.Impulse);
         }
     }
 
