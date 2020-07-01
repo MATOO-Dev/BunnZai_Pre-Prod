@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     [HideInInspector] public CapsuleCollider mPlayerCollider;
     [HideInInspector] public BoxCollider mGroundCheckCollider;
     [HideInInspector] public Rigidbody mRigidBody;
+    [HideInInspector] public Camera mCamera;
 
     [Header("Movement Parameters")]
     public bool mIsGrounded;
@@ -51,16 +52,17 @@ public class Player : MonoBehaviour
 
     void Awake() //pre-start 
     {
+        //get components
+        mPlayerCollider = GetComponent<CapsuleCollider>();
+        mGroundCheckCollider = GetComponent<BoxCollider>();
+        mRigidBody = GetComponent<Rigidbody>();
+        mCamera = this.gameObject.GetComponentInChildren<Camera>();
+
         //get linked scripts
         mBasicMovement = GetComponent<PlayerBasicMovement>();
         mAdvancedMovement = GetComponent<PlayerAdvancedMovement>();
         mCameraController = GetComponent<PlayerCameraController>();
         mCombatController = GetComponent<PlayerCombatController>();
-
-        //get components
-        mPlayerCollider = GetComponent<CapsuleCollider>();
-        mGroundCheckCollider = GetComponent<BoxCollider>();
-        mRigidBody = GetComponent<Rigidbody>();
     }
 
     private void Update() //every frame (fps dependant), use for graphics/input
@@ -78,6 +80,11 @@ public class Player : MonoBehaviour
         {
             if (mDashTimer <= 0)
                 mAdvancedMovement.Dash();
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            mRigidBody.velocity = (this.transform.forward * mJumpVelocityForward);
+            Debug.Log("YEET");
         }
     }
 

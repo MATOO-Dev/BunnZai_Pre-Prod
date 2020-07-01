@@ -14,7 +14,6 @@ public class PlayerBasicMovement : MonoBehaviour
     float turningVelocity;
     //change to getcomponent with cam/cinemachine
     //add script to cam to get player reference
-    public Transform cam;
 
     public void Awake()
     {
@@ -38,12 +37,12 @@ public class PlayerBasicMovement : MonoBehaviour
             }
             else
             {
-                speedToUse = mPlayer.mRigidBody.velocity.magnitude;
+                speedToUse = new Vector2(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.z).magnitude;
                 //speedToUse = mPlayer.mMaxWalkSpeed;
                 timeToUse = mPlayer.mStrafeTurnTime;
             }
             //get the angle of desired player movement
-            float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + mPlayer.mCamera.transform.eulerAngles.y;
             //smooth out player rotation towards that angle
             float directionAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turningVelocity, timeToUse);
             //apply smoothed rotation
@@ -68,7 +67,7 @@ public class PlayerBasicMovement : MonoBehaviour
         if (mPlayer.mIsGrounded || (!mPlayer.mIsGrounded && !mPlayer.mAerialJumpUsed))
         {
             mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mJumpVelocity, mPlayer.mRigidBody.velocity.y);
-            mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (transform.forward * mPlayer.mJumpVelocityForward);
+            mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity + (mPlayer.transform.forward * mPlayer.mJumpVelocityForward);
         }
         if (!mPlayer.mIsGrounded)
             mPlayer.mAerialJumpUsed = true;
