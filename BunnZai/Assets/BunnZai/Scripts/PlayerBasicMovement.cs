@@ -28,12 +28,12 @@ public class PlayerBasicMovement : MonoBehaviour
         {
             float speedToUse = 0;
             float timeToUse = 0;
-            if (mPlayer.mIsGrounded)
+            if (mPlayer.mIsGrounded || mPlayer.mIsWalled)
             {
                 speedToUse = mPlayer.mMaxWalkSpeed;
                 timeToUse = mPlayer.mWalkTurnTime;
             }
-            else
+            else if (!mPlayer.mIsGrounded && !mPlayer.mIsWalled)
             {
                 speedToUse = new Vector2(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.z).magnitude;
                 //speedToUse = mPlayer.mMaxWalkSpeed;
