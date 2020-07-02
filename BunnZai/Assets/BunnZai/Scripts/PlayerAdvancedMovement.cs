@@ -87,8 +87,8 @@ public class PlayerAdvancedMovement : MonoBehaviour
         {
             mWallJumpUsable = false;
             mWallJumpTimer = mWallJumpCooldown;
-            mPlayer.mRigidBody.velocity += mPlayer.mDirection * new Vector3(0, 0, mPlayer.mWallJumpSpeed);
-            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.y + mPlayer.mWallJumpHeight + mPlayer.mRigidBody.velocity.z);
+            mPlayer.mRigidBody.velocity += mPlayer.transform.forward + new Vector3(0, 0, mPlayer.mWallJumpSpeed);
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.y + mPlayer.mWallJumpHeight, mPlayer.mRigidBody.velocity.z);
         }
     }
 
