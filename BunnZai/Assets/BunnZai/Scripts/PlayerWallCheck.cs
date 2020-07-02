@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerWallCheck : MonoBehaviour
 {
-    public Player mPlayer;
+    Player mPlayer;
     private void Start()
     {
         mPlayer = this.gameObject.GetComponentInParent<Player>();

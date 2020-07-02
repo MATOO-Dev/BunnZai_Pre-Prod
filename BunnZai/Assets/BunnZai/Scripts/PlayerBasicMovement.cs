@@ -26,7 +26,7 @@ public class PlayerBasicMovement : MonoBehaviour
         //get normalized direction based on input
         Vector3 inputDirection = mPlayer.GetInpitValues().normalized;
 
-        if (inputDirection.magnitude >= 0.1f)
+        if (inputDirection.magnitude >= 0.3f && !mPlayer.mIsDashing)
         {
             float speedToUse = 0;
             float timeToUse = 0;
@@ -79,7 +79,7 @@ public class PlayerBasicMovement : MonoBehaviour
 
     public void UpdateVelocities()
     {
-        if (mPlayer.mRigidBody.velocity.y < 0  && !mPlayer.mIsWalled && mPlayer.mRigidBody.velocity.y > -5)
+        if (mPlayer.mRigidBody.velocity.y < 0 && !mPlayer.mIsWalled)
             mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.y * mPlayer.mFallSpeedMultiplier, mPlayer.mRigidBody.velocity.z);
 
         if (mPlayer.mRigidBody.velocity.y < -mPlayer.mTerminalVelocity)
