@@ -37,9 +37,10 @@ public class Player : MonoBehaviour
     public float mTerminalVelocity;         //terminal velocity
     public float mDashCooldown;             //dash cooldown, starts at beginning of dash (aka end of dash remaining cooldown = cooldown-duration)
     public float mDashDuration;             //dash duration
-    public float mWallRunGravity;           //gravity multiplier during wallrun
     public float mDashSpeed;
+    public float mWallRunGravity;           //gravity multiplier during wallrun
     public float mWallJumpSpeed;
+    public float mWallJumpHeight;
     [HideInInspector]
     public Quaternion mWallJumpDir;
 
@@ -104,6 +105,8 @@ public class Player : MonoBehaviour
             mRigidBody.useGravity = true;
             mAdvancedMovement.EndDash();
         }
+        if (!mIsWalled)
+            mAdvancedMovement.mWallJumpUsable = true;
 
         mDirection = transform.rotation;
         mBasicMovement.AddMovementInput();

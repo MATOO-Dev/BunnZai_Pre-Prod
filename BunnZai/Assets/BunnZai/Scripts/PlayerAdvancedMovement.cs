@@ -6,8 +6,12 @@ using UnityEngine.PlayerLoop;
 public class PlayerAdvancedMovement : MonoBehaviour
 {
     Player mPlayer;
+    private float mWallJumpCooldown;
+    private float mWallJumpTimer;
+    public bool mWallJumpUsable = true;
+    private Vector3 mSpeedBeforeDash;
+
     private Vector3 normal;
-   
     private void Awake()
     {
         mPlayer = GetComponent<Player>();
@@ -15,15 +19,16 @@ public class PlayerAdvancedMovement : MonoBehaviour
 
     public void Dash()
     {
+        mSpeedBeforeDash = mPlayer.mRigidBody.velocity;
         mPlayer.mDashTimer = mPlayer.mDashCooldown;
         mPlayer.mIsDashing = true;
-        mPlayer.mRigidBody.velocity += mPlayer.mDirection * new Vector3(1, 1, mPlayer.mDashSpeed);
+        mPlayer.mRigidBody.velocity += mPlayer.mDirection * new Vector3(0, 0, mPlayer.mDashSpeed);
     }
 
     public void EndDash()
     {
         mPlayer.mIsDashing = false;
-        mPlayer.mRigidBody.velocity = mPlayer.mRigidBody.velocity.normalized;
+        mPlayer.mRigidBody.velocity = mSpeedBeforeDash;
     }
 
     public void Wallrun()
@@ -46,7 +51,7 @@ public class PlayerAdvancedMovement : MonoBehaviour
                     mPlayer.mWallJumpDir.eulerAngles = new Vector3(normal.x + 10, normal.y, normal.z);
                 if (Input.GetKeyDown(KeyCode.D))
                     mPlayer.mWallJumpDir.eulerAngles = new Vector3(normal.x - 10, normal.y, normal.z);
-            
+
                 // mPlayer.mWallRunAvailable = false;  <- if only need to animate once
                 // Animate right
             }
@@ -62,7 +67,7 @@ public class PlayerAdvancedMovement : MonoBehaviour
             }
             mPlayer.mWallJumpDir = Quaternion.Euler(normal);
         }
-        
+
         //if(velocity > wallrunvelocity)
         //mPlayer.mRigidBody.velocity *= 0.995f;
     }
@@ -78,7 +83,13 @@ public class PlayerAdvancedMovement : MonoBehaviour
 
     public void WallJump()
     {
-        mPlayer.mRigidBody.velocity = mPlayer.mDirection * new Vector3(1, 1, mPlayer.mWallJumpSpeed);
+        if (mWallJumpUsable)
+        {
+            mWallJumpUsable = false;
+            mWallJumpTimer = mWallJumpCooldown;
+            mPlayer.mRigidBody.velocity += mPlayer.mDirection * new Vector3(0, 0, mPlayer.mWallJumpSpeed);
+            mPlayer.mRigidBody.velocity = new Vector3(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.y + mPlayer.mWallJumpHeight + mPlayer.mRigidBody.velocity.z);
+        }
     }
 
     public void HandleVelocityFalloff()
