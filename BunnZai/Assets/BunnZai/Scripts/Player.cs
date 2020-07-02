@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     public bool mIsGrounded;
     public bool mIsWalled;
     public bool mIsWallRunning;
-    public bool mWallRunAvailable;
+    public bool mWallRunAvailable = true;
     public bool mIsDashing;
     public bool mAerialJumpUsed;
 
@@ -42,12 +42,13 @@ public class Player : MonoBehaviour
     public float mDashDuration;             //dash duration
     public float mDashSpeed;
     public float mWallRunGravity;           //gravity multiplier during wallrun
-    public float mWallRunSpeed;
+    public float mWallJumpSpeed;
+    public float mWallJumpHeight;
+    [HideInInspector] public Quaternion mWallJumpDir;
 
 
     [Header("Local Variables")]
     [HideInInspector] public float mDashTimer;                //dash timer
-    [HideInInspector] public Quaternion mDirection;
     [HideInInspector] public float mForwardAxisDelta;
     [HideInInspector] public float mSidewaysAxisDelta;
 
@@ -84,7 +85,10 @@ public class Player : MonoBehaviour
         if (Input.GetButtonDown("Dash"))
         {
             if (mDashTimer <= 0)
+            {
+                mRigidBody.useGravity = false;
                 mAdvancedMovement.Dash();
+            }
         }
     }
 
@@ -100,10 +104,13 @@ public class Player : MonoBehaviour
         if (mDashTimer > 0)
             mDashTimer -= Time.deltaTime;
         if (mDashTimer <= (mDashCooldown - mDashDuration) && mIsDashing)
+        {
+            mRigidBody.useGravity = true;
             mAdvancedMovement.EndDash();
+        }
+        if (!mIsWalled)
+            mAdvancedMovement.mWallJumpUsable = true;
 
-
-        mDirection = transform.rotation;
         mBasicMovement.AddMovementInput();
         mBasicMovement.UpdateVelocities();
         UpdateExternalForces();
@@ -122,7 +129,7 @@ public class Player : MonoBehaviour
 
     public void UpdateExternalForces()
     {
-        if (mRigidBody.velocity.y < 0 && mIsWalled)
+        if (mRigidBody.velocity.y <= 0 && mIsWalled)
             mRigidBody.AddForce(Physics.gravity * (mWallRunGravity - 1));
     }
 }

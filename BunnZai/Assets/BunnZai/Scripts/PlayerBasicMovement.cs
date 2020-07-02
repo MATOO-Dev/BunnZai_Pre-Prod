@@ -38,12 +38,17 @@ public class PlayerBasicMovement : MonoBehaviour
                 speedToUse = new Vector2(mPlayer.mRigidBody.velocity.x, mPlayer.mRigidBody.velocity.z).magnitude;
                 //speedToUse = mPlayer.mMaxWalkSpeed;
                 timeToUse = mPlayer.mStrafeTurnTime;
+                if (speedToUse < 1)
+                    speedToUse = mPlayer.mMaxWalkSpeed;
             }
             //get the angle of desired player movement
             float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + mPlayer.mCamera.transform.eulerAngles.y;
             //smooth out player rotation towards that angle
             float directionAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turningVelocity, timeToUse);
             //apply smoothed rotation
+            //if (mPlayer.mIsWalled)
+            //    transform.rotation = new Quaternion(transform.rotation.x, mPlayer.mWallJumpDir.y, transform.rotation.z, 1);
+            //else
             transform.rotation = Quaternion.Euler(transform.rotation.x, directionAngle, transform.rotation.z);
 
             //add movement force to rigidbody
