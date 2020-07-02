@@ -69,7 +69,6 @@ public class Player : MonoBehaviour
 
     private void Update() //every frame (fps dependant), use for graphics/input
     {
-        mDirection = transform.rotation;
         UpdateInputValues();
         //call jump functions
         if (Input.GetButtonDown("Jump"))
@@ -87,6 +86,10 @@ public class Player : MonoBehaviour
                 mAdvancedMovement.Dash();
             }
         }
+    }
+
+    void FixedUpdate() //50x/s (default value), use for physics
+    {
         if (mIsWalled && !mIsGrounded)
         {
             mAdvancedMovement.Wallrun();
@@ -102,11 +105,8 @@ public class Player : MonoBehaviour
             mAdvancedMovement.EndDash();
         }
 
+        mDirection = transform.rotation;
         mBasicMovement.AddMovementInput();
-    }
-
-    void FixedUpdate() //50x/s (default value), use for physics
-    {
         mBasicMovement.UpdateVelocities();
         UpdateExternalForces();
     }
