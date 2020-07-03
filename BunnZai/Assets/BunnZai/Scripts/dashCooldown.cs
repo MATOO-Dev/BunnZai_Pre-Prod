@@ -16,6 +16,6 @@ public class dashCooldown : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        slider.value = player.mDashTimer / 3;
+        slider.value = player.mDashTimer / player.mDashCooldown;
     }
 }
